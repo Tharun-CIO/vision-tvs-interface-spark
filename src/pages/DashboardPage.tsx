@@ -14,7 +14,9 @@ import {
   Settings,
   Ruler,
   Weight,
-  Droplets
+  Droplets,
+  Search,
+  Bell
 } from "lucide-react";
 import PersonCard from "../components/PersonCard";
 import VitalChart from "../components/VitalChart";
@@ -109,27 +111,40 @@ const DashboardPage = ({ onLogout, onShowAdmin }: DashboardPageProps) => {
     }
   ]);
 
+  // Auto-select first person on load
+  useEffect(() => {
+    if (people.length > 0 && !selectedPerson) {
+      setSelectedPerson(people[0]);
+    }
+  }, [people, selectedPerson]);
+
   return (
-    <div className="min-h-screen bg-white p-4">
+    <div className="min-h-screen bg-gray-50 p-6">
       {/* Header */}
-      <div className="flex items-center justify-between mb-6 pb-4 border-b-2 border-black">
+      <div className="flex items-center justify-between mb-8">
         <div>
-          <h1 className="text-4xl font-bold text-black">Health Monitor Dashboard</h1>
-          <p className="text-gray-600">Real-time employee health tracking</p>
+          <h1 className="text-3xl font-bold text-gray-900">Health Overview</h1>
+          <p className="text-gray-500 text-sm mt-1">August 12, 2021</p>
         </div>
         <div className="flex items-center space-x-4">
+          <Button variant="ghost" size="icon" className="text-gray-600 hover:bg-gray-100">
+            <Search className="w-5 h-5" />
+          </Button>
+          <Button variant="ghost" size="icon" className="text-gray-600 hover:bg-gray-100">
+            <Bell className="w-5 h-5" />
+          </Button>
           <Button 
             onClick={onShowAdmin}
-            variant="outline" 
-            className="border-2 border-black text-black hover:bg-gray-100"
+            variant="ghost" 
+            className="text-gray-600 hover:bg-gray-100"
           >
             <Settings className="w-4 h-4 mr-2" />
             Admin
           </Button>
           <Button 
             onClick={onLogout}
-            variant="outline" 
-            className="border-2 border-black text-black hover:bg-gray-100"
+            variant="ghost" 
+            className="text-gray-600 hover:bg-gray-100"
           >
             <LogOut className="w-4 h-4 mr-2" />
             Logout
@@ -137,147 +152,219 @@ const DashboardPage = ({ onLogout, onShowAdmin }: DashboardPageProps) => {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 h-[calc(100vh-140px)]">
-        {/* People List */}
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+        {/* Left Sidebar - Person Profile */}
         <div className="lg:col-span-1">
-          <Card className="bg-white border-2 border-black h-full">
-            <CardHeader>
-              <CardTitle className="text-black">Employees ({people.length})</CardTitle>
+          <Card className="bg-gray-800 text-white rounded-3xl overflow-hidden">
+            <CardContent className="p-8">
+              {selectedPerson ? (
+                <div className="text-center">
+                  <div className="mb-6">
+                    <Avatar className="w-32 h-32 mx-auto mb-4 rounded-2xl">
+                      <AvatarImage src={selectedPerson.photo} />
+                      <AvatarFallback className="bg-gray-700 text-white text-2xl rounded-2xl">
+                        <User className="w-16 h-16" />
+                      </AvatarFallback>
+                    </Avatar>
+                  </div>
+                  
+                  {/* Physical Stats */}
+                  <div className="grid grid-cols-2 gap-4 mt-8">
+                    <div className="bg-orange-200 bg-opacity-20 rounded-2xl p-4 text-center">
+                      <div className="flex items-center justify-center mb-2">
+                        <Ruler className="w-4 h-4 text-orange-300 mr-1" />
+                      </div>
+                      <p className="text-orange-200 text-xs mb-1">Height</p>
+                      <p className="text-white font-semibold">{selectedPerson.height.replace('"', ' cm').replace("'", '').replace('6', '170').replace('5', '165')}</p>
+                    </div>
+                    <div className="bg-blue-200 bg-opacity-20 rounded-2xl p-4 text-center">
+                      <div className="flex items-center justify-center mb-2">
+                        <Weight className="w-4 h-4 text-blue-300 mr-1" />
+                      </div>
+                      <p className="text-blue-200 text-xs mb-1">Weight</p>
+                      <p className="text-white font-semibold">{selectedPerson.weight.replace('lbs', 'kg').replace('180', '72').replace('140', '58')}</p>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center">
+                  <User className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                  <p>Select an employee</p>
+                </div>
+              )}
+            </CardContent>
+          </Card>
+
+          {/* Employee List */}
+          <Card className="mt-6 bg-white rounded-2xl shadow-sm">
+            <CardHeader className="pb-3">
+              <CardTitle className="text-gray-900 text-lg">Employees ({people.length})</CardTitle>
             </CardHeader>
             <CardContent className="p-4">
-              <div className="space-y-4 max-h-[calc(100vh-240px)] overflow-y-auto">
+              <div className="space-y-3">
                 {people.map((person) => (
-                  <PersonCard
+                  <div
                     key={person.id}
-                    person={person}
-                    onSelect={() => setSelectedPerson(person)}
-                  />
+                    onClick={() => setSelectedPerson(person)}
+                    className={`p-3 rounded-xl cursor-pointer transition-all ${
+                      selectedPerson?.id === person.id
+                        ? 'bg-blue-50 border border-blue-200'
+                        : 'bg-gray-50 hover:bg-gray-100'
+                    }`}
+                  >
+                    <div className="flex items-center space-x-3">
+                      <Avatar className="w-8 h-8">
+                        <AvatarImage src={person.photo} />
+                        <AvatarFallback className="bg-gray-200 text-gray-600 text-xs">
+                          {person.name.split(' ').map(n => n[0]).join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 min-w-0">
+                        <p className="text-sm font-medium text-gray-900 truncate">{person.name}</p>
+                        <p className="text-xs text-gray-500">{person.location}</p>
+                      </div>
+                      <Badge className={`text-xs ${
+                        person.status === 'normal' ? 'bg-green-100 text-green-800' :
+                        person.status === 'warning' ? 'bg-yellow-100 text-yellow-800' : 
+                        'bg-red-100 text-red-800'
+                      }`}>
+                        {person.status}
+                      </Badge>
+                    </div>
+                  </div>
                 ))}
               </div>
             </CardContent>
           </Card>
         </div>
 
-        {/* Selected Person Details */}
-        <div className="lg:col-span-2">
+        {/* Main Content */}
+        <div className="lg:col-span-3">
           {selectedPerson ? (
-            <div className="grid grid-cols-1 gap-6 h-full">
-              {/* Profile Info */}
-              <Card className="bg-white border-2 border-black">
-                <CardContent className="p-6">
-                  <div className="flex items-center space-x-6 mb-6">
-                    <Avatar className="w-20 h-20 border-2 border-black">
-                      <AvatarImage src={selectedPerson.photo} />
-                      <AvatarFallback className="bg-gray-100 text-black text-2xl">
-                        <User className="w-10 h-10" />
-                      </AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <h2 className="text-3xl font-bold text-black mb-2">{selectedPerson.name}</h2>
-                      <div className="grid grid-cols-2 md:grid-cols-4 gap-4 text-sm">
-                        <div className="text-gray-600">
-                          <span className="block text-gray-500">Age</span>
-                          <span className="font-semibold text-black">{selectedPerson.age} years</span>
+            <div className="space-y-6">
+              {/* Vital Signs Cards */}
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                {/* Blood Pressure Card */}
+                <Card className="bg-white rounded-2xl shadow-sm border-0">
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
+                          <Droplets className="w-6 h-6 text-blue-600" />
                         </div>
-                        <div className="text-gray-600">
-                          <span className="block text-gray-500">Gender</span>
-                          <span className="font-semibold text-black">{selectedPerson.gender}</span>
-                        </div>
-                        <div className="text-gray-600">
-                          <span className="block text-gray-500">Location</span>
-                          <span className="font-semibold text-black">{selectedPerson.location}</span>
-                        </div>
-                        <div className="text-gray-600">
-                          <span className="block text-gray-500">MAC</span>
-                          <span className="font-semibold text-black">{selectedPerson.mac}</span>
+                        <div>
+                          <h3 className="font-semibold text-gray-900">Blood Pressure</h3>
                         </div>
                       </div>
                     </div>
-                    <Badge className={
-                      selectedPerson.status === 'normal' ? 'bg-green-500 text-white' :
-                      selectedPerson.status === 'warning' ? 'bg-yellow-500 text-black' : 'bg-red-500 text-white'
-                    }>
-                      {selectedPerson.status.charAt(0).toUpperCase() + selectedPerson.status.slice(1)}
-                    </Badge>
+                    <div className="mb-4">
+                      <div className="flex items-baseline space-x-2">
+                        <span className="text-3xl font-bold text-gray-900">102</span>
+                        <span className="text-lg text-gray-500">/ 72</span>
+                        <span className="text-sm text-gray-400">mmHg</span>
+                      </div>
+                      <Badge className="bg-green-100 text-green-800 text-xs mt-2">Normal</Badge>
+                    </div>
+                    <div className="h-16 bg-blue-50 rounded-xl flex items-end justify-center overflow-hidden">
+                      <div className="w-full h-8 bg-gradient-to-r from-blue-200 to-blue-300 rounded-t-lg opacity-60"></div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Heart Rate Card */}
+                <Card className="bg-white rounded-2xl shadow-sm border-0">
+                  <CardContent className="p-6">
+                    <div className="flex items-start justify-between mb-4">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
+                          <Heart className="w-6 h-6 text-red-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-900">Heart Rate</h3>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mb-4">
+                      <div className="flex items-baseline space-x-2">
+                        <span className="text-3xl font-bold text-gray-900">{selectedPerson.heartRate}</span>
+                        <span className="text-sm text-gray-400">bpm</span>
+                      </div>
+                      <Badge className="bg-green-100 text-green-800 text-xs mt-2">Normal</Badge>
+                    </div>
+                    <div className="h-16 bg-red-50 rounded-xl flex items-end justify-center overflow-hidden">
+                      <div className="w-full h-8 bg-gradient-to-r from-red-200 to-red-300 rounded-t-lg opacity-60"></div>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+
+              {/* Activity Growth Chart */}
+              <Card className="bg-white rounded-2xl shadow-sm border-0">
+                <CardHeader className="pb-4">
+                  <div className="flex items-center justify-between">
+                    <CardTitle className="text-gray-900 text-xl">Activity Growth</CardTitle>
+                    <select className="text-sm text-gray-500 bg-transparent border-0 focus:ring-0">
+                      <option>Jan 2021</option>
+                    </select>
+                  </div>
+                </CardHeader>
+                <CardContent className="p-6 pt-0">
+                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-4">Heart Rate Trends</h4>
+                      <div className="h-48">
+                        <VitalChart
+                          title="Heart Rate"
+                          subtitle="Real-time monitoring"
+                          data={selectedPerson.heartRateHistory}
+                          normalRange="60-100 bpm"
+                          latest={`${selectedPerson.heartRate} bpm`}
+                          color="#ef4444"
+                          unit="bpm"
+                        />
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="font-semibold text-gray-900 mb-4">Temperature Trends</h4>
+                      <div className="h-48">
+                        <VitalChart
+                          title="Temperature"
+                          subtitle="Body temperature"
+                          data={selectedPerson.temperatureHistory}
+                          normalRange="97-99°F"
+                          latest={`${selectedPerson.temperature}°F`}
+                          color="#3b82f6"
+                          unit="°F"
+                        />
+                      </div>
+                    </div>
                   </div>
                   
-                  {/* Physical Information */}
-                  <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 flex items-center space-x-3">
-                      <div className="bg-gray-200 p-2 rounded-lg">
-                        <Ruler className="w-5 h-5 text-gray-600" />
-                      </div>
-                      <div>
-                        <p className="text-gray-500 text-sm">Height</p>
-                        <p className="text-black font-semibold">{selectedPerson.height}</p>
-                      </div>
+                  {/* Activity Legend */}
+                  <div className="flex items-center justify-center space-x-6 mt-6 pt-6 border-t border-gray-100">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 rounded-full bg-red-400"></div>
+                      <span className="text-sm text-gray-600">Aerobics</span>
                     </div>
-                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 flex items-center space-x-3">
-                      <div className="bg-gray-200 p-2 rounded-lg">
-                        <Weight className="w-5 h-5 text-gray-600" />
-                      </div>
-                      <div>
-                        <p className="text-gray-500 text-sm">Weight</p>
-                        <p className="text-black font-semibold">{selectedPerson.weight}</p>
-                      </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 rounded-full bg-teal-400"></div>
+                      <span className="text-sm text-gray-600">Yoga</span>
                     </div>
-                    <div className="bg-gray-50 border border-gray-200 rounded-lg p-4 flex items-center space-x-3">
-                      <div className="bg-gray-200 p-2 rounded-lg">
-                        <Droplets className="w-5 h-5 text-gray-600" />
-                      </div>
-                      <div>
-                        <p className="text-gray-500 text-sm">Blood Group</p>
-                        <p className="text-black font-semibold">{selectedPerson.bloodGroup}</p>
-                      </div>
+                    <div className="flex items-center space-x-2">
+                      <div className="w-3 h-3 rounded-full bg-orange-400"></div>
+                      <span className="text-sm text-gray-600">Meditation</span>
                     </div>
                   </div>
                 </CardContent>
               </Card>
-
-              {/* Vital Signs Charts */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6 flex-1">
-                <Card className="bg-white border-2 border-black">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-black text-lg">Heart Rate</CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-4 h-64">
-                    <VitalChart
-                      title="Heart Rate"
-                      subtitle="Real-time monitoring"
-                      data={selectedPerson.heartRateHistory}
-                      normalRange="60-100 bpm"
-                      latest={`${selectedPerson.heartRate} bpm`}
-                      color="#ef4444"
-                      unit="bpm"
-                    />
-                  </CardContent>
-                </Card>
-
-                <Card className="bg-white border-2 border-black">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-black text-lg">Temperature</CardTitle>
-                  </CardHeader>
-                  <CardContent className="p-4 h-64">
-                    <VitalChart
-                      title="Temperature"
-                      subtitle="Body temperature"
-                      data={selectedPerson.temperatureHistory}
-                      normalRange="97-99°F"
-                      latest={`${selectedPerson.temperature}°F`}
-                      color="#3b82f6"
-                      unit="°F"
-                    />
-                  </CardContent>
-                </Card>
-              </div>
             </div>
           ) : (
-            <Card className="bg-white border-2 border-black h-full flex items-center justify-center">
+            <Card className="bg-white rounded-2xl shadow-sm border-0 h-96 flex items-center justify-center">
               <CardContent>
-                <div className="text-center text-black">
+                <div className="text-center text-gray-500">
                   <User className="w-16 h-16 mx-auto mb-4 opacity-50" />
                   <h3 className="text-xl font-semibold mb-2">Select an Employee</h3>
-                  <p className="text-gray-600">Choose an employee from the list to view their health data</p>
+                  <p className="text-gray-400">Choose an employee from the list to view their health data</p>
                 </div>
               </CardContent>
             </Card>
