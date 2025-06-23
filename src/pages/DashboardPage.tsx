@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -150,10 +151,10 @@ const DashboardPage = ({ onLogout, onShowAdmin }: DashboardPageProps) => {
 
   if (selectedPerson) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100">
-        <div className="max-w-full mx-auto p-4 space-y-6">
+      <div className="h-screen bg-gradient-to-br from-gray-50 to-gray-100 overflow-hidden">
+        <div className="h-full max-w-full mx-auto p-4 flex flex-col">
           {/* Header */}
-          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b-2 border-black bg-white rounded-lg px-6 py-4 shadow-sm">
+          <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b-2 border-black bg-white rounded-lg px-6 py-4 shadow-sm flex-shrink-0">
             <div className="flex items-center space-x-4">
               <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center shadow-md">
                 <Activity className="w-6 h-6 text-white" />
@@ -194,24 +195,24 @@ const DashboardPage = ({ onLogout, onShowAdmin }: DashboardPageProps) => {
             </div>
           </div>
 
-          {/* Person Details View */}
-          <div className="grid grid-cols-1 xl:grid-cols-4 gap-6">
+          {/* Content Area */}
+          <div className="flex-1 grid grid-cols-1 xl:grid-cols-4 gap-4 mt-4 min-h-0">
             {/* Person Info - Enhanced */}
-            <div className="xl:col-span-1 space-y-6">
+            <div className="xl:col-span-1 space-y-4 overflow-y-auto">
               {/* Main Profile Card */}
               <Card className="bg-white border-2 border-black shadow-lg hover:shadow-xl transition-shadow duration-300">
-                <CardContent className="p-6">
-                  <div className="text-center mb-6">
-                    <Avatar className="w-20 h-20 mx-auto mb-4 ring-4 ring-blue-100">
+                <CardContent className="p-4">
+                  <div className="text-center">
+                    <Avatar className="w-16 h-16 mx-auto mb-3 ring-4 ring-blue-100">
                       <AvatarImage src={selectedPerson.photo} />
-                      <AvatarFallback className="bg-blue-500 text-white text-xl">
-                        <User className="w-10 h-10" />
+                      <AvatarFallback className="bg-blue-500 text-white text-lg">
+                        <User className="w-8 h-8" />
                       </AvatarFallback>
                     </Avatar>
-                    <h2 className="text-2xl font-bold text-black mb-2">{selectedPerson.name}</h2>
-                    <p className="text-gray-600">{selectedPerson.age} years • {selectedPerson.gender}</p>
+                    <h2 className="text-xl font-bold text-black mb-1">{selectedPerson.name}</h2>
+                    <p className="text-gray-600 text-sm">{selectedPerson.age} years • {selectedPerson.gender}</p>
                     <Badge 
-                      className={`mt-3 px-3 py-1 text-sm font-semibold ${
+                      className={`mt-2 px-3 py-1 text-xs font-semibold ${
                         selectedPerson.status === 'normal' ? 'bg-green-500 hover:bg-green-600' :
                         selectedPerson.status === 'warning' ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-red-500 hover:bg-red-600'
                       } text-white rounded-full`}
@@ -224,32 +225,32 @@ const DashboardPage = ({ onLogout, onShowAdmin }: DashboardPageProps) => {
 
               {/* Details Card */}
               <Card className="bg-white border-2 border-black shadow-lg">
-                <CardHeader>
+                <CardHeader className="pb-2">
                   <CardTitle className="text-black text-lg flex items-center">
-                    <User className="w-5 h-5 mr-2 text-blue-500" />
-                    Personal Details
+                    <User className="w-4 h-4 mr-2 text-blue-500" />
+                    Details
                   </CardTitle>
                 </CardHeader>
-                <CardContent className="space-y-3">
-                  <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                    <MapPin className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                <CardContent className="space-y-2">
+                  <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
+                    <MapPin className="w-3 h-3 text-blue-500 flex-shrink-0" />
                     <div className="min-w-0">
                       <p className="text-xs text-gray-600">Location</p>
-                      <p className="font-semibold text-black text-sm break-words">{selectedPerson.location}</p>
+                      <p className="font-semibold text-black text-xs break-words">{selectedPerson.location}</p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                    <Wifi className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                  <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
+                    <Wifi className="w-3 h-3 text-blue-500 flex-shrink-0" />
                     <div className="min-w-0">
                       <p className="text-xs text-gray-600">MAC Address</p>
-                      <p className="font-semibold text-black text-sm font-mono break-all">{selectedPerson.mac}</p>
+                      <p className="font-semibold text-black text-xs font-mono break-all">{selectedPerson.mac}</p>
                     </div>
                   </div>
-                  <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
-                    <Clock className="w-4 h-4 text-blue-500 flex-shrink-0" />
+                  <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
+                    <Clock className="w-3 h-3 text-blue-500 flex-shrink-0" />
                     <div className="min-w-0">
                       <p className="text-xs text-gray-600">Last Update</p>
-                      <p className="font-semibold text-black text-sm">{currentTime.toLocaleTimeString()}</p>
+                      <p className="font-semibold text-black text-xs">{currentTime.toLocaleTimeString()}</p>
                     </div>
                   </div>
                 </CardContent>
@@ -257,25 +258,25 @@ const DashboardPage = ({ onLogout, onShowAdmin }: DashboardPageProps) => {
             </div>
 
             {/* Vital Signs */}
-            <div className="xl:col-span-3 space-y-6">
+            <div className="xl:col-span-3 flex flex-col min-h-0">
               {/* Current Vitals */}
-              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 mb-4">
                 <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 shadow-lg hover:shadow-xl transition-all duration-300">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center">
-                          <Heart className="w-5 h-5 text-white" />
+                  <CardContent className="p-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 bg-green-500 rounded-full flex items-center justify-center">
+                          <Heart className="w-4 h-4 text-white" />
                         </div>
                         <div>
-                          <span className="text-green-700 font-semibold">Heart Rate</span>
+                          <span className="text-green-700 font-semibold text-sm">Heart Rate</span>
                           <p className="text-green-600 text-xs">Normal: 60-100 bpm</p>
                         </div>
                       </div>
                       <Badge className="bg-green-500 text-white px-2 py-1 text-xs">Normal</Badge>
                     </div>
-                    <div className="text-3xl font-bold text-green-700 mb-2">
-                      {selectedPerson.heartRate} <span className="text-lg">bpm</span>
+                    <div className="text-2xl font-bold text-green-700 mb-2">
+                      {selectedPerson.heartRate} <span className="text-sm">bpm</span>
                     </div>
                     <div className="w-full bg-green-200 rounded-full h-2">
                       <div 
@@ -287,21 +288,21 @@ const DashboardPage = ({ onLogout, onShowAdmin }: DashboardPageProps) => {
                 </Card>
 
                 <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-200 shadow-lg hover:shadow-xl transition-all duration-300">
-                  <CardContent className="p-4">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-                          <Thermometer className="w-5 h-5 text-white" />
+                  <CardContent className="p-3">
+                    <div className="flex items-center justify-between mb-2">
+                      <div className="flex items-center space-x-2">
+                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                          <Thermometer className="w-4 h-4 text-white" />
                         </div>
                         <div>
-                          <span className="text-blue-700 font-semibold">Temperature</span>
+                          <span className="text-blue-700 font-semibold text-sm">Temperature</span>
                           <p className="text-blue-600 text-xs">Normal: 97-99 °F</p>
                         </div>
                       </div>
                       <Badge className="bg-blue-500 text-white px-2 py-1 text-xs">Normal</Badge>
                     </div>
-                    <div className="text-3xl font-bold text-blue-700 mb-2">
-                      {selectedPerson.temperature} <span className="text-lg">°F</span>
+                    <div className="text-2xl font-bold text-blue-700 mb-2">
+                      {selectedPerson.temperature} <span className="text-sm">°F</span>
                     </div>
                     <div className="w-full bg-blue-200 rounded-full h-2">
                       <div 
@@ -313,17 +314,17 @@ const DashboardPage = ({ onLogout, onShowAdmin }: DashboardPageProps) => {
                 </Card>
               </div>
 
-              {/* Charts */}
-              <div className="grid grid-cols-1 2xl:grid-cols-2 gap-4">
-                <Card className="bg-white border-2 border-black shadow-lg">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-black text-lg flex items-center">
+              {/* Charts - Fixed Layout */}
+              <div className="flex-1 grid grid-cols-1 xl:grid-cols-2 gap-4 min-h-0">
+                <Card className="bg-white border-2 border-black shadow-lg flex flex-col">
+                  <CardHeader className="pb-2 flex-shrink-0">
+                    <CardTitle className="text-black text-base flex items-center">
                       <Heart className="w-4 h-4 mr-2 text-red-500" />
                       Heart Rate Trend
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="p-4">
-                    <div className="h-64 w-full">
+                  <CardContent className="p-4 flex-1 min-h-0">
+                    <div className="h-full w-full">
                       <VitalChart
                         title=""
                         subtitle="(Last 12 readings)"
@@ -337,15 +338,15 @@ const DashboardPage = ({ onLogout, onShowAdmin }: DashboardPageProps) => {
                   </CardContent>
                 </Card>
                 
-                <Card className="bg-white border-2 border-black shadow-lg">
-                  <CardHeader className="pb-2">
-                    <CardTitle className="text-black text-lg flex items-center">
+                <Card className="bg-white border-2 border-black shadow-lg flex flex-col">
+                  <CardHeader className="pb-2 flex-shrink-0">
+                    <CardTitle className="text-black text-base flex items-center">
                       <Thermometer className="w-4 h-4 mr-2 text-blue-500" />
                       Temperature Trend
                     </CardTitle>
                   </CardHeader>
-                  <CardContent className="p-4">
-                    <div className="h-64 w-full">
+                  <CardContent className="p-4 flex-1 min-h-0">
+                    <div className="h-full w-full">
                       <VitalChart
                         title=""
                         subtitle="(Last 12 readings)"
@@ -367,10 +368,10 @@ const DashboardPage = ({ onLogout, onShowAdmin }: DashboardPageProps) => {
   }
 
   return (
-    <div className="min-h-screen bg-white">
-      <div className="max-w-full mx-auto p-4 space-y-6">
+    <div className="h-screen bg-white overflow-hidden">
+      <div className="h-full max-w-full mx-auto p-4 flex flex-col">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b-2 border-black">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4 pb-4 border-b-2 border-black flex-shrink-0">
           <div className="flex items-center space-x-4">
             <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
               <Activity className="w-6 h-6 text-white" />
@@ -404,43 +405,48 @@ const DashboardPage = ({ onLogout, onShowAdmin }: DashboardPageProps) => {
           </div>
         </div>
 
-        {/* Status Overview */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          <StatusPanel
-            title="Total People"
-            value={people.length.toString()}
-            icon={<Users className="w-6 h-6" />}
-            color="blue"
-          />
-          <StatusPanel
-            title="Normal"
-            value={normalCount.toString()}
-            icon={<CheckCircle className="w-6 h-6" />}
-            color="green"
-          />
-          <StatusPanel
-            title="Warning"
-            value={warningCount.toString()}
-            icon={<AlertTriangle className="w-6 h-6" />}
-            color="yellow"
-          />
-          <StatusPanel
-            title="Critical"
-            value={criticalCount.toString()}
-            icon={<Activity className="w-6 h-6" />}
-            color="red"
-          />
-        </div>
-
-        {/* People Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
-          {people.map((person) => (
-            <PersonCard 
-              key={person.id} 
-              person={person} 
-              onSelect={() => setSelectedPerson(person)}
+        {/* Content Area */}
+        <div className="flex-1 flex flex-col mt-4 min-h-0">
+          {/* Status Overview */}
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4 mb-4">
+            <StatusPanel
+              title="Total People"
+              value={people.length.toString()}
+              icon={<Users className="w-6 h-6" />}
+              color="blue"
             />
-          ))}
+            <StatusPanel
+              title="Normal"
+              value={normalCount.toString()}
+              icon={<CheckCircle className="w-6 h-6" />}
+              color="green"
+            />
+            <StatusPanel
+              title="Warning"
+              value={warningCount.toString()}
+              icon={<AlertTriangle className="w-6 h-6" />}
+              color="yellow"
+            />
+            <StatusPanel
+              title="Critical"
+              value={criticalCount.toString()}
+              icon={<Activity className="w-6 h-6" />}
+              color="red"
+            />
+          </div>
+
+          {/* People Grid */}
+          <div className="flex-1 overflow-y-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-4">
+              {people.map((person) => (
+                <PersonCard 
+                  key={person.id} 
+                  person={person} 
+                  onSelect={() => setSelectedPerson(person)}
+                />
+              ))}
+            </div>
+          </div>
         </div>
       </div>
     </div>
