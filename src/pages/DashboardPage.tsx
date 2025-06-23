@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -15,13 +16,13 @@ import {
   User,
   Shield
 } from "lucide-react";
-import PersonCard from "./PersonCard";
-import StatusPanel from "./StatusPanel";
-import VitalChart from "./VitalChart";
-import AdminPage from "./AdminPage";
+import PersonCard from "../components/PersonCard";
+import StatusPanel from "../components/StatusPanel";
+import VitalChart from "../components/VitalChart";
 
-interface DashboardProps {
+interface DashboardPageProps {
   onLogout: () => void;
+  onShowAdmin: () => void;
 }
 
 interface Person {
@@ -39,9 +40,8 @@ interface Person {
   temperatureHistory: Array<{ time: string; value: number }>;
 }
 
-const Dashboard = ({ onLogout }: DashboardProps) => {
+const DashboardPage = ({ onLogout, onShowAdmin }: DashboardPageProps) => {
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
-  const [showAdmin, setShowAdmin] = useState(false);
   const [people, setPeople] = useState<Person[]>([
     {
       id: "PERSON-001",
@@ -146,50 +146,44 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
   const warningCount = people.filter(person => person.status === 'warning').length;
   const criticalCount = people.filter(person => person.status === 'critical').length;
 
-  // Show admin page if requested
-  if (showAdmin) {
-    return <AdminPage onBack={() => setShowAdmin(false)} />;
-  }
-
   if (selectedPerson) {
     return (
-      <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
+      <div className="min-h-screen bg-white p-4">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8">
+        <div className="flex items-center justify-between mb-8 pb-4 border-b-2 border-black">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
               <Activity className="w-6 h-6 text-white" />
             </div>
             <div>
-              <h1 className="text-3xl font-bold text-white">Hostage Monitoring System</h1>
-              <p className="text-gray-300">{currentTime.toLocaleString()}</p>
+              <h1 className="text-3xl font-bold text-black">Hostage Monitoring System</h1>
+              <p className="text-gray-600">{currentTime.toLocaleString()}</p>
             </div>
           </div>
           
           <div className="flex items-center space-x-4">
             <Button 
-              variant="ghost" 
-              className="text-white hover:bg-white/10"
+              variant="outline" 
+              className="text-black border-2 border-black hover:bg-gray-100"
               onClick={() => setSelectedPerson(null)}
             >
               Dashboard
             </Button>
-            <Button variant="ghost" className="text-white hover:bg-white/10">
+            <Button variant="outline" className="text-black border-2 border-black hover:bg-gray-100">
               <Settings className="w-4 h-4 mr-2" />
               Settings
             </Button>
             <Button 
-              variant="ghost" 
-              className="text-white hover:bg-white/10"
-              onClick={() => setShowAdmin(true)}
+              className="bg-blue-500 hover:bg-blue-600 text-white"
+              onClick={onShowAdmin}
             >
               <Shield className="w-4 h-4 mr-2" />
               Admin
             </Button>
             <Button 
               onClick={onLogout}
-              variant="ghost" 
-              className="text-white hover:bg-red-500/20 hover:text-red-200"
+              variant="outline"
+              className="text-red-600 border-2 border-red-600 hover:bg-red-50"
             >
               <LogOut className="w-4 h-4 mr-2" />
               Logout
@@ -201,29 +195,29 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
           {/* Person Info */}
           <div className="lg:col-span-1">
-            <Card className="bg-white/10 backdrop-blur-lg border-white/20">
+            <Card className="bg-white border-2 border-black">
               <CardContent className="p-6">
                 <div className="flex items-center space-x-4 mb-4">
                   <Avatar className="w-16 h-16">
                     <AvatarImage src={selectedPerson.photo} />
-                    <AvatarFallback className="bg-gradient-to-r from-purple-500 to-blue-500 text-white">
+                    <AvatarFallback className="bg-blue-500 text-white">
                       <User className="w-8 h-8" />
                     </AvatarFallback>
                   </Avatar>
                   <div>
-                    <h2 className="text-2xl font-bold text-white">{selectedPerson.name}</h2>
-                    <p className="text-gray-300">{selectedPerson.age} years • {selectedPerson.gender}</p>
+                    <h2 className="text-2xl font-bold text-black">{selectedPerson.name}</h2>
+                    <p className="text-gray-600">{selectedPerson.age} years • {selectedPerson.gender}</p>
                     <Badge 
                       className={`mt-2 ${
-                        selectedPerson.status === 'normal' ? 'bg-green-500' :
-                        selectedPerson.status === 'warning' ? 'bg-yellow-500' : 'bg-red-500'
-                      }`}
+                        selectedPerson.status === 'normal' ? 'bg-green-500 hover:bg-green-600' :
+                        selectedPerson.status === 'warning' ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-red-500 hover:bg-red-600'
+                      } text-white`}
                     >
                       {selectedPerson.status.charAt(0).toUpperCase() + selectedPerson.status.slice(1)}
                     </Badge>
                   </div>
                 </div>
-                <div className="space-y-2 text-gray-300">
+                <div className="space-y-2 text-gray-700">
                   <p><strong>Location:</strong> {selectedPerson.location}</p>
                   <p><strong>MAC:</strong> {selectedPerson.mac}</p>
                 </div>
@@ -234,35 +228,35 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
           {/* Vital Signs */}
           <div className="lg:col-span-2">
             <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <Card className="bg-white/10 backdrop-blur-lg border-white/20 border-2 border-green-400">
+              <Card className="bg-white border-2 border-green-400">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
-                      <Heart className="w-5 h-5 text-green-400" />
-                      <span className="text-green-400 font-medium">Heart Rate</span>
+                      <Heart className="w-5 h-5 text-green-500" />
+                      <span className="text-green-500 font-medium">Heart Rate</span>
                     </div>
-                    <span className="text-green-400 text-sm font-medium">Normal</span>
+                    <span className="text-green-500 text-sm font-medium">Normal</span>
                   </div>
-                  <div className="text-3xl font-bold text-white mb-1">
+                  <div className="text-3xl font-bold text-black mb-1">
                     {selectedPerson.heartRate} <span className="text-lg">bpm</span>
                   </div>
-                  <p className="text-gray-400 text-sm">Normal range: 60-100 bpm</p>
+                  <p className="text-gray-600 text-sm">Normal range: 60-100 bpm</p>
                 </CardContent>
               </Card>
 
-              <Card className="bg-white/10 backdrop-blur-lg border-white/20 border-2 border-green-400">
+              <Card className="bg-white border-2 border-green-400">
                 <CardContent className="p-6">
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
-                      <Thermometer className="w-5 h-5 text-green-400" />
-                      <span className="text-green-400 font-medium">Body Temperature</span>
+                      <Thermometer className="w-5 h-5 text-green-500" />
+                      <span className="text-green-500 font-medium">Body Temperature</span>
                     </div>
-                    <span className="text-green-400 text-sm font-medium">Normal</span>
+                    <span className="text-green-500 text-sm font-medium">Normal</span>
                   </div>
-                  <div className="text-3xl font-bold text-white mb-1">
+                  <div className="text-3xl font-bold text-black mb-1">
                     {selectedPerson.temperature} <span className="text-lg">°F</span>
                   </div>
-                  <p className="text-gray-400 text-sm">Normal range: 97-99 °F</p>
+                  <p className="text-gray-600 text-sm">Normal range: 97-99 °F</p>
                 </CardContent>
               </Card>
             </div>
@@ -295,36 +289,35 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
+    <div className="min-h-screen bg-white p-4">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-8 pb-4 border-b-2 border-black">
         <div className="flex items-center space-x-4">
-          <div className="w-12 h-12 bg-gradient-to-r from-purple-500 to-blue-500 rounded-lg flex items-center justify-center">
+          <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
             <Activity className="w-6 h-6 text-white" />
           </div>
           <div>
-            <h1 className="text-3xl font-bold text-white">Hostage Monitoring System</h1>
-            <p className="text-gray-300">{currentTime.toLocaleString()}</p>
+            <h1 className="text-3xl font-bold text-black">Hostage Monitoring System</h1>
+            <p className="text-gray-600">{currentTime.toLocaleString()}</p>
           </div>
         </div>
         
         <div className="flex items-center space-x-4">
-          <Button variant="ghost" className="text-white hover:bg-white/10">
+          <Button variant="outline" className="text-black border-2 border-black hover:bg-gray-100">
             <Settings className="w-4 h-4 mr-2" />
             Settings
           </Button>
           <Button 
-            variant="ghost" 
-            className="text-white hover:bg-white/10"
-            onClick={() => setShowAdmin(true)}
+            className="bg-blue-500 hover:bg-blue-600 text-white"
+            onClick={onShowAdmin}
           >
             <Shield className="w-4 h-4 mr-2" />
             Admin
           </Button>
           <Button 
             onClick={onLogout}
-            variant="ghost" 
-            className="text-white hover:bg-red-500/20 hover:text-red-200"
+            variant="outline"
+            className="text-red-600 border-2 border-red-600 hover:bg-red-50"
           >
             <LogOut className="w-4 h-4 mr-2" />
             Logout
@@ -374,4 +367,4 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
   );
 };
 
-export default Dashboard;
+export default DashboardPage;

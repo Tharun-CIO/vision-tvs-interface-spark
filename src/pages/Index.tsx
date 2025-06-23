@@ -1,25 +1,43 @@
 
 import { useState } from "react";
-import LoginPage from "../components/LoginPage";
-import Dashboard from "../components/Dashboard";
+import LoginPage from "./LoginPage";
+import DashboardPage from "./DashboardPage";
+import AdminPage from "./AdminPage";
+
+type AppView = 'login' | 'dashboard' | 'admin';
 
 const Index = () => {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [currentView, setCurrentView] = useState<AppView>('login');
 
   const handleLogin = () => {
-    setIsLoggedIn(true);
+    setCurrentView('dashboard');
   };
 
   const handleLogout = () => {
-    setIsLoggedIn(false);
+    setCurrentView('login');
+  };
+
+  const handleShowAdmin = () => {
+    setCurrentView('admin');
+  };
+
+  const handleBackToDashboard = () => {
+    setCurrentView('dashboard');
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900">
-      {!isLoggedIn ? (
+    <div className="min-h-screen bg-white">
+      {currentView === 'login' && (
         <LoginPage onLogin={handleLogin} />
-      ) : (
-        <Dashboard onLogout={handleLogout} />
+      )}
+      {currentView === 'dashboard' && (
+        <DashboardPage 
+          onLogout={handleLogout} 
+          onShowAdmin={handleShowAdmin}
+        />
+      )}
+      {currentView === 'admin' && (
+        <AdminPage onBack={handleBackToDashboard} />
       )}
     </div>
   );
