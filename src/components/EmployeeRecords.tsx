@@ -1,10 +1,10 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { 
   ArrowLeft, 
   Search, 
@@ -13,9 +13,11 @@ import {
   Heart, 
   Thermometer,
   User,
-  Calendar
+  Calendar,
+  UserPlus
 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import EmployeeEntry from "./EmployeeEntry";
 
 interface EmployeeRecordsProps {
   onBack: () => void;
@@ -37,6 +39,7 @@ const EmployeeRecords = ({ onBack }: EmployeeRecordsProps) => {
   const { toast } = useToast();
   const [searchTerm, setSearchTerm] = useState('');
   const [selectedEmployee, setSelectedEmployee] = useState<Employee | null>(null);
+  const [isEntryDialogOpen, setIsEntryDialogOpen] = useState(false);
 
   // Sample employee data
   const employees: Employee[] = [
@@ -124,6 +127,26 @@ const EmployeeRecords = ({ onBack }: EmployeeRecordsProps) => {
             <p className="text-gray-300">View and download employee vital signs records</p>
           </div>
         </div>
+        
+        {/* Employee Entry Details Button */}
+        <Dialog open={isEntryDialogOpen} onOpenChange={setIsEntryDialogOpen}>
+          <DialogTrigger asChild>
+            <Button 
+              className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-6 py-3 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+            >
+              <UserPlus className="w-5 h-5 mr-2" />
+              Employee Entry Details
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 border-white/20">
+            <DialogHeader>
+              <DialogTitle className="text-white text-2xl">Add New Employee</DialogTitle>
+            </DialogHeader>
+            <div className="mt-4">
+              <EmployeeEntry onBack={() => setIsEntryDialogOpen(false)} />
+            </div>
+          </DialogContent>
+        </Dialog>
       </div>
 
       <div className="max-w-7xl mx-auto">
