@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,11 +12,13 @@ import {
   Users,
   Heart,
   Thermometer,
-  User
+  User,
+  Shield
 } from "lucide-react";
 import PersonCard from "./PersonCard";
 import StatusPanel from "./StatusPanel";
 import VitalChart from "./VitalChart";
+import AdminPage from "./AdminPage";
 
 interface DashboardProps {
   onLogout: () => void;
@@ -40,6 +41,7 @@ interface Person {
 
 const Dashboard = ({ onLogout }: DashboardProps) => {
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
+  const [showAdmin, setShowAdmin] = useState(false);
   const [people, setPeople] = useState<Person[]>([
     {
       id: "PERSON-001",
@@ -144,6 +146,11 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
   const warningCount = people.filter(person => person.status === 'warning').length;
   const criticalCount = people.filter(person => person.status === 'critical').length;
 
+  // Show admin page if requested
+  if (showAdmin) {
+    return <AdminPage onBack={() => setShowAdmin(false)} />;
+  }
+
   if (selectedPerson) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 p-4">
@@ -171,7 +178,12 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
               <Settings className="w-4 h-4 mr-2" />
               Settings
             </Button>
-            <Button variant="ghost" className="text-white hover:bg-white/10">
+            <Button 
+              variant="ghost" 
+              className="text-white hover:bg-white/10"
+              onClick={() => setShowAdmin(true)}
+            >
+              <Shield className="w-4 h-4 mr-2" />
               Admin
             </Button>
             <Button 
@@ -301,8 +313,12 @@ const Dashboard = ({ onLogout }: DashboardProps) => {
             <Settings className="w-4 h-4 mr-2" />
             Settings
           </Button>
-          <Button variant="ghost" className="text-white hover:bg-white/10">
-            <Users className="w-4 h-4 mr-2" />
+          <Button 
+            variant="ghost" 
+            className="text-white hover:bg-white/10"
+            onClick={() => setShowAdmin(true)}
+          >
+            <Shield className="w-4 h-4 mr-2" />
             Admin
           </Button>
           <Button 
