@@ -14,7 +14,10 @@ import {
   Heart,
   Thermometer,
   User,
-  Shield
+  Shield,
+  MapPin,
+  Clock,
+  Wifi
 } from "lucide-react";
 import PersonCard from "../components/PersonCard";
 import StatusPanel from "../components/StatusPanel";
@@ -148,11 +151,11 @@ const DashboardPage = ({ onLogout, onShowAdmin }: DashboardPageProps) => {
 
   if (selectedPerson) {
     return (
-      <div className="min-h-screen bg-white p-4">
+      <div className="min-h-screen bg-gradient-to-br from-gray-50 to-gray-100 p-4">
         {/* Header */}
-        <div className="flex items-center justify-between mb-8 pb-4 border-b-2 border-black">
+        <div className="flex items-center justify-between mb-8 pb-4 border-b-2 border-black bg-white rounded-lg px-6 py-4 shadow-sm">
           <div className="flex items-center space-x-4">
-            <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center">
+            <div className="w-12 h-12 bg-blue-500 rounded-lg flex items-center justify-center shadow-md">
               <Activity className="w-6 h-6 text-white" />
             </div>
             <div>
@@ -192,95 +195,165 @@ const DashboardPage = ({ onLogout, onShowAdmin }: DashboardPageProps) => {
         </div>
 
         {/* Person Details View */}
-        <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
-          {/* Person Info */}
-          <div className="lg:col-span-1">
-            <Card className="bg-white border-2 border-black">
-              <CardContent className="p-6">
-                <div className="flex items-center space-x-4 mb-4">
-                  <Avatar className="w-16 h-16">
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+          {/* Person Info - Enhanced */}
+          <div className="lg:col-span-1 space-y-6">
+            {/* Main Profile Card */}
+            <Card className="bg-white border-2 border-black shadow-lg hover:shadow-xl transition-shadow duration-300">
+              <CardContent className="p-8">
+                <div className="text-center mb-6">
+                  <Avatar className="w-24 h-24 mx-auto mb-4 ring-4 ring-blue-100">
                     <AvatarImage src={selectedPerson.photo} />
-                    <AvatarFallback className="bg-blue-500 text-white">
-                      <User className="w-8 h-8" />
+                    <AvatarFallback className="bg-blue-500 text-white text-2xl">
+                      <User className="w-12 h-12" />
                     </AvatarFallback>
                   </Avatar>
+                  <h2 className="text-3xl font-bold text-black mb-2">{selectedPerson.name}</h2>
+                  <p className="text-gray-600 text-lg">{selectedPerson.age} years • {selectedPerson.gender}</p>
+                  <Badge 
+                    className={`mt-3 px-4 py-2 text-sm font-semibold ${
+                      selectedPerson.status === 'normal' ? 'bg-green-500 hover:bg-green-600' :
+                      selectedPerson.status === 'warning' ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-red-500 hover:bg-red-600'
+                    } text-white rounded-full`}
+                  >
+                    {selectedPerson.status.charAt(0).toUpperCase() + selectedPerson.status.slice(1)}
+                  </Badge>
+                </div>
+              </CardContent>
+            </Card>
+
+            {/* Details Card */}
+            <Card className="bg-white border-2 border-black shadow-lg">
+              <CardHeader>
+                <CardTitle className="text-black text-xl flex items-center">
+                  <User className="w-5 h-5 mr-2 text-blue-500" />
+                  Personal Details
+                </CardTitle>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                  <MapPin className="w-5 h-5 text-blue-500" />
                   <div>
-                    <h2 className="text-2xl font-bold text-black">{selectedPerson.name}</h2>
-                    <p className="text-gray-600">{selectedPerson.age} years • {selectedPerson.gender}</p>
-                    <Badge 
-                      className={`mt-2 ${
-                        selectedPerson.status === 'normal' ? 'bg-green-500 hover:bg-green-600' :
-                        selectedPerson.status === 'warning' ? 'bg-yellow-500 hover:bg-yellow-600' : 'bg-red-500 hover:bg-red-600'
-                      } text-white`}
-                    >
-                      {selectedPerson.status.charAt(0).toUpperCase() + selectedPerson.status.slice(1)}
-                    </Badge>
+                    <p className="text-sm text-gray-600">Location</p>
+                    <p className="font-semibold text-black">{selectedPerson.location}</p>
                   </div>
                 </div>
-                <div className="space-y-2 text-gray-700">
-                  <p><strong>Location:</strong> {selectedPerson.location}</p>
-                  <p><strong>MAC:</strong> {selectedPerson.mac}</p>
+                <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                  <Wifi className="w-5 h-5 text-blue-500" />
+                  <div>
+                    <p className="text-sm text-gray-600">MAC Address</p>
+                    <p className="font-semibold text-black font-mono">{selectedPerson.mac}</p>
+                  </div>
+                </div>
+                <div className="flex items-center space-x-3 p-3 bg-gray-50 rounded-lg">
+                  <Clock className="w-5 h-5 text-blue-500" />
+                  <div>
+                    <p className="text-sm text-gray-600">Last Update</p>
+                    <p className="font-semibold text-black">{currentTime.toLocaleTimeString()}</p>
+                  </div>
                 </div>
               </CardContent>
             </Card>
           </div>
 
           {/* Vital Signs */}
-          <div className="lg:col-span-2">
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-6 mb-6">
-              <Card className="bg-white border-2 border-green-400">
+          <div className="lg:col-span-2 space-y-6">
+            {/* Current Vitals */}
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <Card className="bg-gradient-to-br from-green-50 to-emerald-50 border-2 border-green-200 shadow-lg hover:shadow-xl transition-all duration-300">
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center space-x-2">
-                      <Heart className="w-5 h-5 text-green-500" />
-                      <span className="text-green-500 font-medium">Heart Rate</span>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center">
+                        <Heart className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <span className="text-green-700 font-semibold text-lg">Heart Rate</span>
+                        <p className="text-green-600 text-sm">Normal range: 60-100 bpm</p>
+                      </div>
                     </div>
-                    <span className="text-green-500 text-sm font-medium">Normal</span>
+                    <Badge className="bg-green-500 text-white px-3 py-1">Normal</Badge>
                   </div>
-                  <div className="text-3xl font-bold text-black mb-1">
-                    {selectedPerson.heartRate} <span className="text-lg">bpm</span>
+                  <div className="text-4xl font-bold text-green-700 mb-2">
+                    {selectedPerson.heartRate} <span className="text-xl">bpm</span>
                   </div>
-                  <p className="text-gray-600 text-sm">Normal range: 60-100 bpm</p>
+                  <div className="w-full bg-green-200 rounded-full h-2">
+                    <div 
+                      className="bg-green-500 h-2 rounded-full transition-all duration-500" 
+                      style={{width: `${(selectedPerson.heartRate / 100) * 100}%`}}
+                    ></div>
+                  </div>
                 </CardContent>
               </Card>
 
-              <Card className="bg-white border-2 border-green-400">
+              <Card className="bg-gradient-to-br from-blue-50 to-cyan-50 border-2 border-blue-200 shadow-lg hover:shadow-xl transition-all duration-300">
                 <CardContent className="p-6">
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center space-x-2">
-                      <Thermometer className="w-5 h-5 text-green-500" />
-                      <span className="text-green-500 font-medium">Body Temperature</span>
+                  <div className="flex items-center justify-between mb-4">
+                    <div className="flex items-center space-x-3">
+                      <div className="w-12 h-12 bg-blue-500 rounded-full flex items-center justify-center">
+                        <Thermometer className="w-6 h-6 text-white" />
+                      </div>
+                      <div>
+                        <span className="text-blue-700 font-semibold text-lg">Temperature</span>
+                        <p className="text-blue-600 text-sm">Normal range: 97-99 °F</p>
+                      </div>
                     </div>
-                    <span className="text-green-500 text-sm font-medium">Normal</span>
+                    <Badge className="bg-blue-500 text-white px-3 py-1">Normal</Badge>
                   </div>
-                  <div className="text-3xl font-bold text-black mb-1">
-                    {selectedPerson.temperature} <span className="text-lg">°F</span>
+                  <div className="text-4xl font-bold text-blue-700 mb-2">
+                    {selectedPerson.temperature} <span className="text-xl">°F</span>
                   </div>
-                  <p className="text-gray-600 text-sm">Normal range: 97-99 °F</p>
+                  <div className="w-full bg-blue-200 rounded-full h-2">
+                    <div 
+                      className="bg-blue-500 h-2 rounded-full transition-all duration-500" 
+                      style={{width: `${((selectedPerson.temperature - 95) / 10) * 100}%`}}
+                    ></div>
+                  </div>
                 </CardContent>
               </Card>
             </div>
 
             {/* Charts */}
             <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
-              <VitalChart
-                title="Heart Rate History"
-                subtitle="(Last 12 readings)"
-                data={selectedPerson.heartRateHistory}
-                normalRange="60-100 bpm"
-                latest={`${selectedPerson.heartRate} bpm`}
-                color="#3b82f6"
-                unit="bpm"
-              />
-              <VitalChart
-                title="Body Temperature History"
-                subtitle="(Last 12 readings)"
-                data={selectedPerson.temperatureHistory}
-                normalRange="97-99 °F"
-                latest={`${selectedPerson.temperature} °F`}
-                color="#ef4444"
-                unit="°F"
-              />
+              <Card className="bg-white border-2 border-black shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-black flex items-center">
+                    <Heart className="w-5 h-5 mr-2 text-red-500" />
+                    Heart Rate Trend
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <VitalChart
+                    title=""
+                    subtitle="(Last 12 readings)"
+                    data={selectedPerson.heartRateHistory}
+                    normalRange="60-100 bpm"
+                    latest={`${selectedPerson.heartRate} bpm`}
+                    color="#3b82f6"
+                    unit="bpm"
+                  />
+                </CardContent>
+              </Card>
+              
+              <Card className="bg-white border-2 border-black shadow-lg">
+                <CardHeader>
+                  <CardTitle className="text-black flex items-center">
+                    <Thermometer className="w-5 h-5 mr-2 text-blue-500" />
+                    Temperature Trend
+                  </CardTitle>
+                </CardHeader>
+                <CardContent>
+                  <VitalChart
+                    title=""
+                    subtitle="(Last 12 readings)"
+                    data={selectedPerson.temperatureHistory}
+                    normalRange="97-99 °F"
+                    latest={`${selectedPerson.temperature} °F`}
+                    color="#ef4444"
+                    unit="°F"
+                  />
+                </CardContent>
+              </Card>
             </div>
           </div>
         </div>
