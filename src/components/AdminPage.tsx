@@ -2,7 +2,8 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { UserPlus, FileText, ArrowLeft } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { UserPlus, FileText, ArrowLeft, Plus } from "lucide-react";
 import EmployeeEntry from "./EmployeeEntry";
 import EmployeeRecords from "./EmployeeRecords";
 
@@ -10,14 +11,11 @@ interface AdminPageProps {
   onBack: () => void;
 }
 
-type AdminView = 'main' | 'entry' | 'records';
+type AdminView = 'main' | 'records';
 
 const AdminPage = ({ onBack }: AdminPageProps) => {
   const [currentView, setCurrentView] = useState<AdminView>('main');
-
-  if (currentView === 'entry') {
-    return <EmployeeEntry onBack={() => setCurrentView('main')} />;
-  }
+  const [isEntryDialogOpen, setIsEntryDialogOpen] = useState(false);
 
   if (currentView === 'records') {
     return <EmployeeRecords onBack={() => setCurrentView('main')} />;
@@ -44,26 +42,31 @@ const AdminPage = ({ onBack }: AdminPageProps) => {
       </div>
 
       {/* Admin Options */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-4xl mx-auto">
-        <Card 
-          className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/15 transition-all duration-300 cursor-pointer group"
-          onClick={() => setCurrentView('entry')}
-        >
-          <CardHeader className="text-center">
-            <div className="mx-auto w-16 h-16 bg-gradient-to-r from-blue-500 to-purple-500 rounded-full flex items-center justify-center mb-4 group-hover:scale-110 transition-transform">
-              <UserPlus className="w-8 h-8 text-white" />
+      <div className="flex flex-col items-center space-y-8 max-w-4xl mx-auto">
+        {/* Employee Entry Button */}
+        <Dialog open={isEntryDialogOpen} onOpenChange={setIsEntryDialogOpen}>
+          <DialogTrigger asChild>
+            <Button 
+              size="lg"
+              className="bg-gradient-to-r from-blue-500 to-purple-500 hover:from-blue-600 hover:to-purple-600 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300 transform hover:scale-105"
+            >
+              <UserPlus className="w-6 h-6 mr-3" />
+              Employee Data Entry
+            </Button>
+          </DialogTrigger>
+          <DialogContent className="max-w-6xl max-h-[90vh] overflow-y-auto bg-gradient-to-br from-slate-900 via-purple-900 to-slate-900 border-white/20">
+            <DialogHeader>
+              <DialogTitle className="text-white text-2xl">Add New Employee</DialogTitle>
+            </DialogHeader>
+            <div className="mt-4">
+              <EmployeeEntry onBack={() => setIsEntryDialogOpen(false)} />
             </div>
-            <CardTitle className="text-white text-xl">Employee Entry</CardTitle>
-          </CardHeader>
-          <CardContent>
-            <p className="text-gray-300 text-center">
-              Add new employees to the monitoring system with their details and photos
-            </p>
-          </CardContent>
-        </Card>
+          </DialogContent>
+        </Dialog>
 
+        {/* Employee Records Card */}
         <Card 
-          className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/15 transition-all duration-300 cursor-pointer group"
+          className="bg-white/10 backdrop-blur-lg border-white/20 hover:bg-white/15 transition-all duration-300 cursor-pointer group w-full max-w-md"
           onClick={() => setCurrentView('records')}
         >
           <CardHeader className="text-center">
