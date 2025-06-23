@@ -48,7 +48,7 @@ const AdminPage = ({ onBack }: AdminPageProps) => {
           <DialogTrigger asChild>
             <Button 
               size="lg"
-              className="bg-blue-500 hover:bg-blue-600 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
+              className="bg-black hover:bg-gray-800 text-white px-8 py-4 text-lg font-semibold shadow-lg hover:shadow-xl transition-all duration-300"
             >
               <UserPlus className="w-6 h-6 mr-3" />
               Employee Data Entry
@@ -70,7 +70,7 @@ const AdminPage = ({ onBack }: AdminPageProps) => {
           onClick={() => setCurrentView('records')}
         >
           <CardHeader className="text-center">
-            <div className="mx-auto w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center mb-4 group-hover:bg-blue-600 transition-colors">
+            <div className="mx-auto w-16 h-16 bg-black rounded-full flex items-center justify-center mb-4 group-hover:bg-gray-800 transition-colors">
               <FileText className="w-8 h-8 text-white" />
             </div>
             <CardTitle className="text-black text-xl">Employee Records</CardTitle>
