@@ -4,9 +4,11 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Heart, Thermometer, User, MapPin, Wifi, LogOut, Settings, Ruler, Weight, Droplets, Search, Bell, WifiOff, Power, Download, FileText } from "lucide-react";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Heart, Thermometer, User, MapPin, Wifi, LogOut, Settings, Ruler, Weight, Droplets, Search, Bell, WifiOff, Power, Download, FileText, UserPlus } from "lucide-react";
 import PersonCard from "../components/PersonCard";
 import VitalChart from "../components/VitalChart";
+import EmployeeEntry from "../components/EmployeeEntry";
 
 interface WorkEntry {
   id: string;
@@ -53,6 +55,7 @@ const DashboardPage = ({
   onShowAdmin
 }: DashboardPageProps) => {
   const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
+  const [isEmployeeEntryOpen, setIsEmployeeEntryOpen] = useState(false);
   const [people, setPeople] = useState<Person[]>([{
     id: "1",
     name: "John Doe",
@@ -313,10 +316,23 @@ const DashboardPage = ({
           <Button variant="ghost" size="icon" className="text-gray-600 hover:bg-gray-100">
             <Bell className="w-4 h-4" />
           </Button>
-          <Button onClick={onShowAdmin} variant="ghost" className="text-gray-600 hover:bg-gray-100">
-            <Settings className="w-3 h-3 mr-1" />
-            Admin
-          </Button>
+          
+          {/* Employee Entry Dialog */}
+          <Dialog open={isEmployeeEntryOpen} onOpenChange={setIsEmployeeEntryOpen}>
+            <DialogTrigger asChild>
+              <Button variant="ghost" className="text-gray-600 hover:bg-gray-100">
+                <UserPlus className="w-3 h-3 mr-1" />
+                Employee Entry
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-gray-800">
+              <DialogHeader>
+                <DialogTitle className="text-white">Employee Entry</DialogTitle>
+              </DialogHeader>
+              <EmployeeEntry onBack={() => setIsEmployeeEntryOpen(false)} />
+            </DialogContent>
+          </Dialog>
+          
           <Button onClick={onLogout} variant="ghost" className="text-gray-600 hover:bg-gray-100">
             <LogOut className="w-3 h-3 mr-1" />
             Logout
