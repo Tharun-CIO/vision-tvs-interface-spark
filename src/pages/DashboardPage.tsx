@@ -16,7 +16,10 @@ import {
   Weight,
   Droplets,
   Search,
-  Bell
+  Bell,
+  Activity,
+  Calendar,
+  Clock
 } from "lucide-react";
 import PersonCard from "../components/PersonCard";
 import VitalChart from "../components/VitalChart";
@@ -119,75 +122,93 @@ const DashboardPage = ({ onLogout, onShowAdmin }: DashboardPageProps) => {
   }, [people, selectedPerson]);
 
   return (
-    <div className="min-h-screen bg-gray-50 p-6">
+    <div className="min-h-screen bg-gray-50 p-4 animate-fade-in">
       {/* Header */}
-      <div className="flex items-center justify-between mb-8">
+      <div className="flex items-center justify-between mb-6 animate-slide-in-right">
         <div>
-          <h1 className="text-3xl font-bold text-gray-900">Health Overview</h1>
-          <p className="text-gray-500 text-sm mt-1">August 12, 2021</p>
+          <h1 className="text-2xl lg:text-3xl font-bold text-gray-900">Health Overview</h1>
+          <p className="text-gray-500 text-sm mt-1 flex items-center">
+            <Calendar className="w-4 h-4 mr-1" />
+            August 12, 2021
+          </p>
         </div>
-        <div className="flex items-center space-x-4">
-          <Button variant="ghost" size="icon" className="text-gray-600 hover:bg-gray-100">
+        <div className="flex items-center space-x-2 lg:space-x-4">
+          <Button variant="ghost" size="icon" className="text-gray-600 hover:bg-gray-100 hover:scale-105 transition-all duration-200">
             <Search className="w-5 h-5" />
           </Button>
-          <Button variant="ghost" size="icon" className="text-gray-600 hover:bg-gray-100">
+          <Button variant="ghost" size="icon" className="text-gray-600 hover:bg-gray-100 hover:scale-105 transition-all duration-200">
             <Bell className="w-5 h-5" />
           </Button>
           <Button 
             onClick={onShowAdmin}
             variant="ghost" 
-            className="text-gray-600 hover:bg-gray-100"
+            className="text-gray-600 hover:bg-gray-100 hover:scale-105 transition-all duration-200 text-sm"
           >
-            <Settings className="w-4 h-4 mr-2" />
-            Admin
+            <Settings className="w-4 h-4 mr-1 lg:mr-2" />
+            <span className="hidden sm:inline">Admin</span>
           </Button>
           <Button 
             onClick={onLogout}
             variant="ghost" 
-            className="text-gray-600 hover:bg-gray-100"
+            className="text-gray-600 hover:bg-gray-100 hover:scale-105 transition-all duration-200 text-sm"
           >
-            <LogOut className="w-4 h-4 mr-2" />
-            Logout
+            <LogOut className="w-4 h-4 mr-1 lg:mr-2" />
+            <span className="hidden sm:inline">Logout</span>
           </Button>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 lg:gap-6 pb-20">
         {/* Left Sidebar - Person Profile */}
-        <div className="lg:col-span-1">
-          <Card className="bg-gray-800 text-white rounded-3xl overflow-hidden">
-            <CardContent className="p-8">
+        <div className="lg:col-span-1 space-y-4">
+          <Card className="bg-gradient-to-br from-slate-800 to-slate-900 text-white rounded-2xl overflow-hidden shadow-lg hover:shadow-xl transition-all duration-300 animate-scale-in">
+            <CardContent className="p-6">
               {selectedPerson ? (
                 <div className="text-center">
-                  <div className="mb-6">
-                    <Avatar className="w-32 h-32 mx-auto mb-4 rounded-2xl">
+                  <div className="mb-4">
+                    <Avatar className="w-24 h-24 lg:w-32 lg:h-32 mx-auto mb-4 rounded-2xl hover:scale-105 transition-transform duration-300">
                       <AvatarImage src={selectedPerson.photo} />
-                      <AvatarFallback className="bg-gray-700 text-white text-2xl rounded-2xl">
-                        <User className="w-16 h-16" />
+                      <AvatarFallback className="bg-gray-700 text-white text-xl lg:text-2xl rounded-2xl">
+                        <User className="w-12 h-12 lg:w-16 lg:h-16" />
                       </AvatarFallback>
                     </Avatar>
+                    <h2 className="text-lg lg:text-xl font-bold mb-1">{selectedPerson.name}</h2>
+                    <p className="text-gray-300 text-sm">{selectedPerson.age} years • {selectedPerson.gender}</p>
+                    <div className="flex items-center justify-center mt-2 text-gray-400 text-xs">
+                      <MapPin className="w-3 h-3 mr-1" />
+                      {selectedPerson.location}
+                    </div>
                   </div>
                   
                   {/* Physical Stats */}
-                  <div className="grid grid-cols-2 gap-4 mt-8">
-                    <div className="bg-orange-200 bg-opacity-20 rounded-2xl p-4 text-center">
+                  <div className="grid grid-cols-2 gap-3 mt-6">
+                    <div className="bg-orange-500/20 rounded-xl p-3 text-center hover:bg-orange-500/30 transition-colors duration-200">
                       <div className="flex items-center justify-center mb-2">
-                        <Ruler className="w-4 h-4 text-orange-300 mr-1" />
+                        <Ruler className="w-4 h-4 text-orange-300" />
                       </div>
                       <p className="text-orange-200 text-xs mb-1">Height</p>
-                      <p className="text-white font-semibold">{selectedPerson.height.replace('"', ' cm').replace("'", '').replace('6', '170').replace('5', '165')}</p>
+                      <p className="text-white font-semibold text-sm">{selectedPerson.height}</p>
                     </div>
-                    <div className="bg-blue-200 bg-opacity-20 rounded-2xl p-4 text-center">
+                    <div className="bg-blue-500/20 rounded-xl p-3 text-center hover:bg-blue-500/30 transition-colors duration-200">
                       <div className="flex items-center justify-center mb-2">
-                        <Weight className="w-4 h-4 text-blue-300 mr-1" />
+                        <Weight className="w-4 h-4 text-blue-300" />
                       </div>
                       <p className="text-blue-200 text-xs mb-1">Weight</p>
-                      <p className="text-white font-semibold">{selectedPerson.weight.replace('lbs', 'kg').replace('180', '72').replace('140', '58')}</p>
+                      <p className="text-white font-semibold text-sm">{selectedPerson.weight}</p>
                     </div>
+                  </div>
+
+                  {/* Blood Group */}
+                  <div className="mt-4 p-3 bg-red-500/20 rounded-xl hover:bg-red-500/30 transition-colors duration-200">
+                    <div className="flex items-center justify-center mb-2">
+                      <Droplets className="w-4 h-4 text-red-300" />
+                    </div>
+                    <p className="text-red-200 text-xs mb-1">Blood Group</p>
+                    <p className="text-white font-semibold">{selectedPerson.bloodGroup}</p>
                   </div>
                 </div>
               ) : (
-                <div className="text-center">
+                <div className="text-center py-8">
                   <User className="w-16 h-16 mx-auto mb-4 opacity-50" />
                   <p>Select an employee</p>
                 </div>
@@ -196,21 +217,25 @@ const DashboardPage = ({ onLogout, onShowAdmin }: DashboardPageProps) => {
           </Card>
 
           {/* Employee List */}
-          <Card className="mt-6 bg-white rounded-2xl shadow-sm">
+          <Card className="bg-white rounded-xl shadow-sm border hover:shadow-md transition-all duration-300">
             <CardHeader className="pb-3">
-              <CardTitle className="text-gray-900 text-lg">Employees ({people.length})</CardTitle>
+              <CardTitle className="text-gray-900 text-base lg:text-lg flex items-center">
+                <User className="w-4 h-4 mr-2" />
+                Employees ({people.length})
+              </CardTitle>
             </CardHeader>
             <CardContent className="p-4">
-              <div className="space-y-3">
-                {people.map((person) => (
+              <div className="space-y-2">
+                {people.map((person, index) => (
                   <div
                     key={person.id}
                     onClick={() => setSelectedPerson(person)}
-                    className={`p-3 rounded-xl cursor-pointer transition-all ${
+                    className={`p-3 rounded-lg cursor-pointer transition-all duration-200 hover:scale-[1.02] ${
                       selectedPerson?.id === person.id
-                        ? 'bg-blue-50 border border-blue-200'
+                        ? 'bg-blue-50 border border-blue-200 shadow-sm'
                         : 'bg-gray-50 hover:bg-gray-100'
                     }`}
+                    style={{ animationDelay: `${index * 100}ms` }}
                   >
                     <div className="flex items-center space-x-3">
                       <Avatar className="w-8 h-8">
@@ -221,9 +246,9 @@ const DashboardPage = ({ onLogout, onShowAdmin }: DashboardPageProps) => {
                       </Avatar>
                       <div className="flex-1 min-w-0">
                         <p className="text-sm font-medium text-gray-900 truncate">{person.name}</p>
-                        <p className="text-xs text-gray-500">{person.location}</p>
+                        <p className="text-xs text-gray-500 truncate">{person.location}</p>
                       </div>
-                      <Badge className={`text-xs ${
+                      <Badge className={`text-xs px-2 py-1 ${
                         person.status === 'normal' ? 'bg-green-100 text-green-800' :
                         person.status === 'warning' ? 'bg-yellow-100 text-yellow-800' : 
                         'bg-red-100 text-red-800'
@@ -241,78 +266,108 @@ const DashboardPage = ({ onLogout, onShowAdmin }: DashboardPageProps) => {
         {/* Main Content */}
         <div className="lg:col-span-3">
           {selectedPerson ? (
-            <div className="space-y-6">
+            <div className="space-y-4 lg:space-y-6">
               {/* Vital Signs Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                {/* Blood Pressure Card */}
-                <Card className="bg-white rounded-2xl shadow-sm border-0">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between mb-4">
-                      <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 bg-blue-100 rounded-xl flex items-center justify-center">
-                          <Droplets className="w-6 h-6 text-blue-600" />
-                        </div>
-                        <div>
-                          <h3 className="font-semibold text-gray-900">Blood Pressure</h3>
-                        </div>
-                      </div>
-                    </div>
-                    <div className="mb-4">
-                      <div className="flex items-baseline space-x-2">
-                        <span className="text-3xl font-bold text-gray-900">102</span>
-                        <span className="text-lg text-gray-500">/ 72</span>
-                        <span className="text-sm text-gray-400">mmHg</span>
-                      </div>
-                      <Badge className="bg-green-100 text-green-800 text-xs mt-2">Normal</Badge>
-                    </div>
-                    <div className="h-16 bg-blue-50 rounded-xl flex items-end justify-center overflow-hidden">
-                      <div className="w-full h-8 bg-gradient-to-r from-blue-200 to-blue-300 rounded-t-lg opacity-60"></div>
-                    </div>
-                  </CardContent>
-                </Card>
-
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 {/* Heart Rate Card */}
-                <Card className="bg-white rounded-2xl shadow-sm border-0">
-                  <CardContent className="p-6">
-                    <div className="flex items-start justify-between mb-4">
+                <Card className="bg-white rounded-xl shadow-sm border hover:shadow-md transition-all duration-300 hover:scale-[1.02]">
+                  <CardContent className="p-4 lg:p-6">
+                    <div className="flex items-start justify-between mb-3">
                       <div className="flex items-center space-x-3">
-                        <div className="w-12 h-12 bg-red-100 rounded-xl flex items-center justify-center">
-                          <Heart className="w-6 h-6 text-red-600" />
+                        <div className="w-10 h-10 lg:w-12 lg:h-12 bg-red-100 rounded-lg flex items-center justify-center">
+                          <Heart className="w-5 h-5 lg:w-6 lg:h-6 text-red-600 animate-pulse" />
                         </div>
                         <div>
-                          <h3 className="font-semibold text-gray-900">Heart Rate</h3>
+                          <h3 className="font-semibold text-gray-900 text-sm lg:text-base">Heart Rate</h3>
                         </div>
                       </div>
                     </div>
-                    <div className="mb-4">
+                    <div className="mb-3">
                       <div className="flex items-baseline space-x-2">
-                        <span className="text-3xl font-bold text-gray-900">{selectedPerson.heartRate}</span>
+                        <span className="text-2xl lg:text-3xl font-bold text-gray-900">{selectedPerson.heartRate}</span>
                         <span className="text-sm text-gray-400">bpm</span>
                       </div>
                       <Badge className="bg-green-100 text-green-800 text-xs mt-2">Normal</Badge>
                     </div>
-                    <div className="h-16 bg-red-50 rounded-xl flex items-end justify-center overflow-hidden">
-                      <div className="w-full h-8 bg-gradient-to-r from-red-200 to-red-300 rounded-t-lg opacity-60"></div>
+                    <div className="h-12 lg:h-16 bg-red-50 rounded-lg flex items-end justify-center overflow-hidden">
+                      <div className="w-full h-6 lg:h-8 bg-gradient-to-r from-red-200 to-red-300 rounded-t-lg opacity-60 animate-pulse"></div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Temperature Card */}
+                <Card className="bg-white rounded-xl shadow-sm border hover:shadow-md transition-all duration-300 hover:scale-[1.02]">
+                  <CardContent className="p-4 lg:p-6">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 lg:w-12 lg:h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+                          <Thermometer className="w-5 h-5 lg:w-6 lg:h-6 text-blue-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-900 text-sm lg:text-base">Temperature</h3>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mb-3">
+                      <div className="flex items-baseline space-x-2">
+                        <span className="text-2xl lg:text-3xl font-bold text-gray-900">{selectedPerson.temperature}</span>
+                        <span className="text-sm text-gray-400">°F</span>
+                      </div>
+                      <Badge className="bg-green-100 text-green-800 text-xs mt-2">Normal</Badge>
+                    </div>
+                    <div className="h-12 lg:h-16 bg-blue-50 rounded-lg flex items-end justify-center overflow-hidden">
+                      <div className="w-full h-6 lg:h-8 bg-gradient-to-r from-blue-200 to-blue-300 rounded-t-lg opacity-60"></div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Blood Pressure Card */}
+                <Card className="bg-white rounded-xl shadow-sm border hover:shadow-md transition-all duration-300 hover:scale-[1.02] sm:col-span-2 lg:col-span-1">
+                  <CardContent className="p-4 lg:p-6">
+                    <div className="flex items-start justify-between mb-3">
+                      <div className="flex items-center space-x-3">
+                        <div className="w-10 h-10 lg:w-12 lg:h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+                          <Activity className="w-5 h-5 lg:w-6 lg:h-6 text-purple-600" />
+                        </div>
+                        <div>
+                          <h3 className="font-semibold text-gray-900 text-sm lg:text-base">Blood Pressure</h3>
+                        </div>
+                      </div>
+                    </div>
+                    <div className="mb-3">
+                      <div className="flex items-baseline space-x-2">
+                        <span className="text-2xl lg:text-3xl font-bold text-gray-900">120</span>
+                        <span className="text-lg text-gray-500">/ 80</span>
+                        <span className="text-sm text-gray-400">mmHg</span>
+                      </div>
+                      <Badge className="bg-green-100 text-green-800 text-xs mt-2">Normal</Badge>
+                    </div>
+                    <div className="h-12 lg:h-16 bg-purple-50 rounded-lg flex items-end justify-center overflow-hidden">
+                      <div className="w-full h-6 lg:h-8 bg-gradient-to-r from-purple-200 to-purple-300 rounded-t-lg opacity-60"></div>
                     </div>
                   </CardContent>
                 </Card>
               </div>
 
               {/* Activity Growth Chart */}
-              <Card className="bg-white rounded-2xl shadow-sm border-0">
+              <Card className="bg-white rounded-xl shadow-sm border hover:shadow-md transition-all duration-300">
                 <CardHeader className="pb-4">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-gray-900 text-xl">Activity Growth</CardTitle>
-                    <select className="text-sm text-gray-500 bg-transparent border-0 focus:ring-0">
-                      <option>Jan 2021</option>
-                    </select>
+                    <CardTitle className="text-gray-900 text-lg lg:text-xl flex items-center">
+                      <Activity className="w-5 h-5 mr-2" />
+                      Vital Signs Monitoring
+                    </CardTitle>
+                    <div className="flex items-center space-x-2 text-sm text-gray-500">
+                      <Clock className="w-4 h-4" />
+                      <span>Real-time</span>
+                    </div>
                   </div>
                 </CardHeader>
-                <CardContent className="p-6 pt-0">
-                  <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <CardContent className="p-4 lg:p-6 pt-0">
+                  <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-4">Heart Rate Trends</h4>
-                      <div className="h-48">
+                      <h4 className="font-semibold text-gray-900 mb-4 text-sm lg:text-base">Heart Rate Trends</h4>
+                      <div className="h-48 lg:h-64">
                         <VitalChart
                           title="Heart Rate"
                           subtitle="Real-time monitoring"
@@ -325,8 +380,8 @@ const DashboardPage = ({ onLogout, onShowAdmin }: DashboardPageProps) => {
                       </div>
                     </div>
                     <div>
-                      <h4 className="font-semibold text-gray-900 mb-4">Temperature Trends</h4>
-                      <div className="h-48">
+                      <h4 className="font-semibold text-gray-900 mb-4 text-sm lg:text-base">Temperature Trends</h4>
+                      <div className="h-48 lg:h-64">
                         <VitalChart
                           title="Temperature"
                           subtitle="Body temperature"
@@ -339,27 +394,11 @@ const DashboardPage = ({ onLogout, onShowAdmin }: DashboardPageProps) => {
                       </div>
                     </div>
                   </div>
-                  
-                  {/* Activity Legend */}
-                  <div className="flex items-center justify-center space-x-6 mt-6 pt-6 border-t border-gray-100">
-                    <div className="flex items-center space-x-2">
-                      <div className="w-3 h-3 rounded-full bg-red-400"></div>
-                      <span className="text-sm text-gray-600">Aerobics</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-3 h-3 rounded-full bg-teal-400"></div>
-                      <span className="text-sm text-gray-600">Yoga</span>
-                    </div>
-                    <div className="flex items-center space-x-2">
-                      <div className="w-3 h-3 rounded-full bg-orange-400"></div>
-                      <span className="text-sm text-gray-600">Meditation</span>
-                    </div>
-                  </div>
                 </CardContent>
               </Card>
             </div>
           ) : (
-            <Card className="bg-white rounded-2xl shadow-sm border-0 h-96 flex items-center justify-center">
+            <Card className="bg-white rounded-xl shadow-sm border h-96 flex items-center justify-center">
               <CardContent>
                 <div className="text-center text-gray-500">
                   <User className="w-16 h-16 mx-auto mb-4 opacity-50" />
@@ -369,6 +408,48 @@ const DashboardPage = ({ onLogout, onShowAdmin }: DashboardPageProps) => {
               </CardContent>
             </Card>
           )}
+        </div>
+      </div>
+
+      {/* Bottom Information Panel */}
+      <div className="fixed bottom-0 left-0 right-0 bg-white border-t shadow-lg p-4 animate-slide-in-right">
+        <div className="max-w-7xl mx-auto">
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 text-center">
+            <div className="hover:scale-105 transition-transform duration-200">
+              <div className="flex items-center justify-center mb-1">
+                <User className="w-4 h-4 text-blue-600 mr-1" />
+                <span className="text-xs font-semibold text-gray-900">Total Employees</span>
+              </div>
+              <p className="text-lg font-bold text-blue-600">{people.length}</p>
+            </div>
+            <div className="hover:scale-105 transition-transform duration-200">
+              <div className="flex items-center justify-center mb-1">
+                <Heart className="w-4 h-4 text-green-600 mr-1" />
+                <span className="text-xs font-semibold text-gray-900">Healthy</span>
+              </div>
+              <p className="text-lg font-bold text-green-600">{people.filter(p => p.status === 'normal').length}</p>
+            </div>
+            <div className="hover:scale-105 transition-transform duration-200">
+              <div className="flex items-center justify-center mb-1">
+                <Activity className="w-4 h-4 text-yellow-600 mr-1" />
+                <span className="text-xs font-semibold text-gray-900">Monitoring</span>
+              </div>
+              <p className="text-lg font-bold text-yellow-600">{people.filter(p => p.status === 'warning').length}</p>
+            </div>
+            <div className="hover:scale-105 transition-transform duration-200">
+              <div className="flex items-center justify-center mb-1">
+                <Wifi className="w-4 h-4 text-gray-600 mr-1" />
+                <span className="text-xs font-semibold text-gray-900">Connected</span>
+              </div>
+              <p className="text-lg font-bold text-gray-600">{people.length}</p>
+            </div>
+          </div>
+          <div className="mt-3 text-center">
+            <p className="text-xs text-gray-500 flex items-center justify-center">
+              <Clock className="w-3 h-3 mr-1" />
+              Last updated: {new Date().toLocaleTimeString()}
+            </p>
+          </div>
         </div>
       </div>
     </div>
