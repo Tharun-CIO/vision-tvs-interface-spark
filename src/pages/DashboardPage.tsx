@@ -1,8 +1,10 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Heart, Thermometer, User, MapPin, Wifi, LogOut, Settings, Ruler, Weight, Droplets, Search, Bell, WifiOff, Power } from "lucide-react";
 import PersonCard from "../components/PersonCard";
 import VitalChart from "../components/VitalChart";
@@ -175,23 +177,67 @@ const DashboardPage = ({
     return { connected, total };
   };
 
+  const handlePersonSelect = (personId: string) => {
+    const person = people.find(p => p.id === personId);
+    if (person) {
+      setSelectedPerson(person);
+    }
+  };
+
   return <div className="h-screen bg-gray-50 p-4 overflow-hidden">
       {/* Header */}
-      <div className="flex items-center justify-between mb-4">
-        <div>
-          <h1 className="text-2xl font-bold text-gray-900">Health Overview</h1>
-          <div className="flex items-center space-x-4 mt-1">
-            <p className="text-gray-500 text-sm">August 12, 2021</p>
-            <div className="flex items-center space-x-2">
-              <div className="flex items-center space-x-1">
-                <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                <span className="text-sm text-gray-600">
-                  {getConnectionStatus().connected}/{getConnectionStatus().total} Connected
-                </span>
+      <div className="flex items-center justify-between mb-3">
+        <div className="flex items-center space-x-6">
+          <div>
+            <h1 className="text-2xl font-bold text-gray-900">Health Overview</h1>
+            <div className="flex items-center space-x-4 mt-1">
+              <p className="text-gray-500 text-sm">August 12, 2021</p>
+              <div className="flex items-center space-x-2">
+                <div className="flex items-center space-x-1">
+                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
+                  <span className="text-sm text-gray-600">
+                    {getConnectionStatus().connected}/{getConnectionStatus().total} Connected
+                  </span>
+                </div>
               </div>
             </div>
           </div>
+          
+          {/* Person Selector Dropdown */}
+          <div className="min-w-[250px]">
+            <Select value={selectedPerson?.id || ""} onValueChange={handlePersonSelect}>
+              <SelectTrigger className="w-full bg-white border-gray-200">
+                <SelectValue placeholder="Select a person" />
+              </SelectTrigger>
+              <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+                {people.map((person) => (
+                  <SelectItem key={person.id} value={person.id} className="cursor-pointer hover:bg-gray-50">
+                    <div className="flex items-center space-x-3 w-full">
+                      <Avatar className="w-6 h-6">
+                        <AvatarImage src={person.photo} />
+                        <AvatarFallback className="bg-gray-200 text-gray-600 text-xs">
+                          {person.name.split(' ').map(n => n[0]).join('')}
+                        </AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <div className="flex items-center justify-between">
+                          <span className="font-medium text-gray-900">{person.name}</span>
+                          <div className="flex items-center space-x-2">
+                            <Badge className={`text-xs ${person.status === 'normal' ? 'bg-green-100 text-green-800' : person.status === 'warning' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
+                              {person.status}
+                            </Badge>
+                            <div className={`w-1.5 h-1.5 rounded-full ${person.connected ? 'bg-green-400' : 'bg-gray-400'}`}></div>
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          </div>
         </div>
+        
         <div className="flex items-center space-x-3">
           <Button variant="ghost" size="icon" className="text-gray-600 hover:bg-gray-100">
             <Search className="w-4 h-4" />
@@ -210,7 +256,7 @@ const DashboardPage = ({
         </div>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 h-[calc(100vh-8rem)]">
+      <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 h-[calc(100vh-7rem)]">
         {/* Left Sidebar - Person Profile */}
         <div className="lg:col-span-1 flex flex-col space-y-4">
           <Card className="bg-gray-800 text-white rounded-2xl overflow-hidden flex-1">
@@ -426,6 +472,47 @@ const DashboardPage = ({
                   )}
                 </CardContent>
               </Card>
+              
+              {/* Basic Information at Bottom */}
+              {selectedPerson && (
+                <Card className="bg-white rounded-2xl shadow-sm border-0">
+                  <CardHeader className="pb-2">
+                    <CardTitle className="text-gray-900 text-lg">Basic Information</CardTitle>
+                  </CardHeader>
+                  <CardContent className="p-4 pt-0">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+                      <div className="flex items-center space-x-2">
+                        <MapPin className="w-4 h-4 text-gray-500" />
+                        <div>
+                          <p className="text-xs text-gray-500">Location</p>
+                          <p className="text-sm font-medium text-gray-900">{selectedPerson.location}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Wifi className="w-4 h-4 text-gray-500" />
+                        <div>
+                          <p className="text-xs text-gray-500">MAC Address</p>
+                          <p className="text-sm font-medium text-gray-900">{selectedPerson.mac}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <Droplets className="w-4 h-4 text-gray-500" />
+                        <div>
+                          <p className="text-xs text-gray-500">Blood Group</p>
+                          <p className="text-sm font-medium text-gray-900">{selectedPerson.bloodGroup}</p>
+                        </div>
+                      </div>
+                      <div className="flex items-center space-x-2">
+                        <User className="w-4 h-4 text-gray-500" />
+                        <div>
+                          <p className="text-xs text-gray-500">Age</p>
+                          <p className="text-sm font-medium text-gray-900">{selectedPerson.age} years</p>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
             </div> : <Card className="bg-white rounded-2xl shadow-sm border-0 h-full flex items-center justify-center">
               <CardContent>
                 <div className="text-center text-gray-500">
