@@ -1,13 +1,21 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { Heart, Thermometer, User, MapPin, Wifi, LogOut, Settings, Ruler, Weight, Droplets, Search, Bell, WifiOff, Power } from "lucide-react";
+import { Heart, Thermometer, User, MapPin, Wifi, LogOut, Settings, Ruler, Weight, Droplets, Search, Bell, WifiOff, Power, Download, FileText } from "lucide-react";
 import PersonCard from "../components/PersonCard";
 import VitalChart from "../components/VitalChart";
+
+interface WorkEntry {
+  id: string;
+  date: string;
+  title: string;
+  description: string;
+  type: string;
+  downloadUrl: string;
+}
 
 interface Person {
   id: string;
@@ -32,6 +40,7 @@ interface Person {
     time: string;
     value: number;
   }>;
+  previousWork: WorkEntry[];
 }
 
 interface DashboardPageProps {
@@ -96,7 +105,33 @@ const DashboardPage = ({
     }, {
       time: "14:00",
       value: 98.6
-    }]
+    }],
+    previousWork: [
+      {
+        id: "w1",
+        date: "2024-06-20",
+        title: "Safety Inspection Report",
+        description: "Building A safety compliance check",
+        type: "PDF",
+        downloadUrl: "/reports/safety-inspection-john.pdf"
+      },
+      {
+        id: "w2",
+        date: "2024-06-18",
+        title: "Equipment Maintenance Log",
+        description: "HVAC system maintenance documentation",
+        type: "XLSX",
+        downloadUrl: "/reports/maintenance-log-john.xlsx"
+      },
+      {
+        id: "w3",
+        date: "2024-06-15",
+        title: "Training Completion Certificate",
+        description: "Fire safety training completion",
+        type: "PDF",
+        downloadUrl: "/reports/training-cert-john.pdf"
+      }
+    ]
   }, {
     id: "2",
     name: "Sarah Smith",
@@ -149,7 +184,25 @@ const DashboardPage = ({
     }, {
       time: "14:00",
       value: 99.2
-    }]
+    }],
+    previousWork: [
+      {
+        id: "w4",
+        date: "2024-06-22",
+        title: "Quality Control Report",
+        description: "Product quality assessment for line B",
+        type: "PDF",
+        downloadUrl: "/reports/quality-control-sarah.pdf"
+      },
+      {
+        id: "w5",
+        date: "2024-06-19",
+        title: "Inventory Count Sheet",
+        description: "Weekly inventory verification",
+        type: "XLSX",
+        downloadUrl: "/reports/inventory-sarah.xlsx"
+      }
+    ]
   }]);
 
   // Auto-select first person on load
@@ -182,6 +235,21 @@ const DashboardPage = ({
     if (person) {
       setSelectedPerson(person);
     }
+  };
+
+  const handleDownload = (workEntry: WorkEntry) => {
+    // Simulate download - in real app this would trigger actual file download
+    console.log(`Downloading ${workEntry.title} for ${selectedPerson?.name}`);
+    // window.open(workEntry.downloadUrl, '_blank');
+  };
+
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString('en-US', { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric' 
+    });
   };
 
   return <div className="h-screen bg-gray-50 p-4 overflow-hidden">
@@ -473,42 +541,49 @@ const DashboardPage = ({
                 </CardContent>
               </Card>
               
-              {/* Basic Information at Bottom */}
+              {/* Previous Work Section */}
               {selectedPerson && (
                 <Card className="bg-white rounded-2xl shadow-sm border-0">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-gray-900 text-lg">Basic Information</CardTitle>
+                    <CardTitle className="text-gray-900 text-lg">Previous Work - {selectedPerson.name}</CardTitle>
                   </CardHeader>
                   <CardContent className="p-4 pt-0">
-                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-                      <div className="flex items-center space-x-2">
-                        <MapPin className="w-4 h-4 text-gray-500" />
-                        <div>
-                          <p className="text-xs text-gray-500">Location</p>
-                          <p className="text-sm font-medium text-gray-900">{selectedPerson.location}</p>
+                    <div className="space-y-3">
+                      {selectedPerson.previousWork.map((work) => (
+                        <div key={work.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                          <div className="flex items-center space-x-3">
+                            <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                              <FileText className="w-4 h-4 text-blue-600" />
+                            </div>
+                            <div>
+                              <p className="font-medium text-gray-900 text-sm">{work.title}</p>
+                              <p className="text-xs text-gray-500">{work.description}</p>
+                              <div className="flex items-center space-x-2 mt-1">
+                                <span className="text-xs text-gray-400">{formatDate(work.date)}</span>
+                                <span className="text-xs text-gray-400">•</span>
+                                <Badge variant="outline" className="text-xs">
+                                  {work.type}
+                                </Badge>
+                              </div>
+                            </div>
+                          </div>
+                          <Button
+                            onClick={() => handleDownload(work)}
+                            size="sm"
+                            variant="outline"
+                            className="shrink-0"
+                          >
+                            <Download className="w-3 h-3 mr-1" />
+                            Download
+                          </Button>
                         </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Wifi className="w-4 h-4 text-gray-500" />
-                        <div>
-                          <p className="text-xs text-gray-500">MAC Address</p>
-                          <p className="text-sm font-medium text-gray-900">{selectedPerson.mac}</p>
+                      ))}
+                      {selectedPerson.previousWork.length === 0 && (
+                        <div className="text-center py-8 text-gray-500">
+                          <FileText className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                          <p className="text-sm">No previous work records found</p>
                         </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <Droplets className="w-4 h-4 text-gray-500" />
-                        <div>
-                          <p className="text-xs text-gray-500">Blood Group</p>
-                          <p className="text-sm font-medium text-gray-900">{selectedPerson.bloodGroup}</p>
-                        </div>
-                      </div>
-                      <div className="flex items-center space-x-2">
-                        <User className="w-4 h-4 text-gray-500" />
-                        <div>
-                          <p className="text-xs text-gray-500">Age</p>
-                          <p className="text-sm font-medium text-gray-900">{selectedPerson.age} years</p>
-                        </div>
-                      </div>
+                      )}
                     </div>
                   </CardContent>
                 </Card>
