@@ -255,7 +255,8 @@ const DashboardPage = ({
     });
   };
 
-  return <div className="h-screen bg-gray-50 p-4 overflow-hidden">
+  return (
+    <div className="h-screen bg-gray-50 p-4 overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-6">
@@ -456,7 +457,8 @@ const DashboardPage = ({
 
         {/* Main Content */}
         <div className="lg:col-span-3">
-          {selectedPerson ? <div className="space-y-4 h-full">
+          {selectedPerson ? (
+            <div className="space-y-4 h-full">
               {/* Status Cards */}
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 {/* Overall Status Card */}
@@ -531,19 +533,15 @@ const DashboardPage = ({
                 </CardHeader>
                 <CardContent className="p-4 pt-0">
                   {selectedPerson.connected ? (
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                      <div>
-                        <h4 className="font-semibold text-gray-900 mb-3 text-sm">Heart Rate Trends</h4>
-                        <div className="h-40">
-                          <VitalChart title="Heart Rate" subtitle="Real-time monitoring" data={selectedPerson.heartRateHistory} normalRange="60-100 bpm" latest={`${selectedPerson.heartRate} bpm`} color="#ef4444" unit="bpm" />
-                        </div>
-                      </div>
-                      <div>
-                        <h4 className="font-semibold text-gray-900 mb-3 text-sm">Temperature Trends</h4>
-                        <div className="h-40">
-                          <VitalChart title="Temperature" subtitle="Body temperature" data={selectedPerson.temperatureHistory} normalRange="97-99°F" latest={`${selectedPerson.temperature}°F`} color="#3b82f6" unit="°F" />
-                        </div>
-                      </div>
+                    <div className="h-60">
+                      <VitalChart 
+                        title="Vital Signs" 
+                        subtitle="Real-time monitoring" 
+                        heartRateData={selectedPerson.heartRateHistory}
+                        temperatureData={selectedPerson.temperatureHistory}
+                        heartRateLatest={`${selectedPerson.heartRate} bpm`}
+                        temperatureLatest={`${selectedPerson.temperature}°F`}
+                      />
                     </div>
                   ) : (
                     <div className="flex items-center justify-center h-40 text-gray-500">
@@ -604,7 +602,9 @@ const DashboardPage = ({
                   </CardContent>
                 </Card>
               )}
-            </div> : <Card className="bg-white rounded-2xl shadow-sm border-0 h-full flex items-center justify-center">
+            </div>
+          ) : (
+            <Card className="bg-white rounded-2xl shadow-sm border-0 h-full flex items-center justify-center">
               <CardContent>
                 <div className="text-center text-gray-500">
                   <User className="w-16 h-16 mx-auto mb-4 opacity-50" />
@@ -612,10 +612,12 @@ const DashboardPage = ({
                   <p className="text-sm">Choose a person to view their health status</p>
                 </div>
               </CardContent>
-            </Card>}
+            </Card>
+          )}
         </div>
       </div>
-    </div>;
+    </div>
+  );
 };
 
 export default DashboardPage;
