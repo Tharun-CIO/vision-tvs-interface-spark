@@ -5,10 +5,11 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Heart, Thermometer, User, MapPin, Wifi, LogOut, Settings, Ruler, Weight, Droplets, Search, Bell, WifiOff, Power, Download, FileText, UserPlus, Activity, Zap } from "lucide-react";
+import { Heart, Thermometer, User, MapPin, Wifi, LogOut, Settings, Ruler, Weight, Droplets, Search, Bell, WifiOff, Power, Download, FileText, UserPlus, Activity, Zap, Wind } from "lucide-react";
 import PersonCard from "../components/PersonCard";
 import VitalChart from "../components/VitalChart";
 import EmployeeEntry from "../components/EmployeeEntry";
+
 interface WorkEntry {
   id: string;
   date: string;
@@ -30,6 +31,7 @@ interface Person {
   height: string;
   weight: string;
   bloodGroup: string;
+  respiratoryRate: number;
   photo: string;
   connected: boolean;
   heartRateHistory: Array<{
@@ -37,6 +39,10 @@ interface Person {
     value: number;
   }>;
   temperatureHistory: Array<{
+    time: string;
+    value: number;
+  }>;
+  respiratoryRateHistory: Array<{
     time: string;
     value: number;
   }>;
@@ -62,6 +68,7 @@ const DashboardPage = ({
     status: "normal",
     heartRate: 72,
     temperature: 98.6,
+    respiratoryRate: 16,
     height: "6'0\"",
     weight: "180 lbs",
     bloodGroup: "O+",
@@ -105,6 +112,25 @@ const DashboardPage = ({
       time: "14:00",
       value: 98.6
     }],
+    respiratoryRateHistory: [{
+      time: "09:00",
+      value: 14
+    }, {
+      time: "10:00",
+      value: 16
+    }, {
+      time: "11:00",
+      value: 15
+    }, {
+      time: "12:00",
+      value: 17
+    }, {
+      time: "13:00",
+      value: 16
+    }, {
+      time: "14:00",
+      value: 16
+    }],
     previousWork: [{
       id: "w1",
       date: "2024-06-20",
@@ -137,6 +163,7 @@ const DashboardPage = ({
     status: "warning",
     heartRate: 85,
     temperature: 99.2,
+    respiratoryRate: 22,
     height: "5'6\"",
     weight: "140 lbs",
     bloodGroup: "A-",
@@ -179,6 +206,25 @@ const DashboardPage = ({
     }, {
       time: "14:00",
       value: 99.2
+    }],
+    respiratoryRateHistory: [{
+      time: "09:00",
+      value: 18
+    }, {
+      time: "10:00",
+      value: 20
+    }, {
+      time: "11:00",
+      value: 22
+    }, {
+      time: "12:00",
+      value: 24
+    }, {
+      time: "13:00",
+      value: 23
+    }, {
+      time: "14:00",
+      value: 22
     }],
     previousWork: [{
       id: "w4",
@@ -485,18 +531,18 @@ const DashboardPage = ({
                   </CardContent>
                 </Card>
 
-                {/* Blood Group Card */}
+                {/* Respiratory Rate Card */}
                 <Card className="bg-white rounded-2xl shadow-sm border-0">
                   <CardContent className="p-3">
                     <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
-                        <Droplets className="w-4 h-4 text-red-600" />
+                      <div className="w-8 h-8 bg-cyan-100 rounded-lg flex items-center justify-center">
+                        <Wind className="w-4 h-4 text-cyan-600" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900 text-xs">Respiratory rate
-                    </h3>
+                        <h3 className="font-semibold text-gray-900 text-xs">Respiratory rate</h3>
                         <div className="flex items-baseline space-x-1 mt-1">
-                          <span className="text-lg font-bold text-gray-900">{selectedPerson.bloodGroup}</span>
+                          <span className="text-lg font-bold text-gray-900">{selectedPerson.connected ? selectedPerson.respiratoryRate : '--'}</span>
+                          <span className="text-xs text-gray-400">bpm</span>
                         </div>
                       </div>
                     </div>
@@ -537,7 +583,19 @@ const DashboardPage = ({
                 </CardHeader>
                 <CardContent className="p-4 pt-0">
                   {selectedPerson.connected ? <div className="h-60">
-                      <VitalChart title="Vital Signs" subtitle="Real-time monitoring" heartRateData={selectedPerson.heartRateHistory} temperatureData={selectedPerson.temperatureHistory} heartRateLatest={`${selectedPerson.heartRate} bpm`} temperatureLatest={`${selectedPerson.temperature}°F`} status={selectedPerson.status} bloodGroup={selectedPerson.bloodGroup} activity={selectedPerson.connected ? 'Active' : 'Inactive'} />
+                      <VitalChart 
+                        title="Vital Signs" 
+                        subtitle="Real-time monitoring" 
+                        heartRateData={selectedPerson.heartRateHistory} 
+                        temperatureData={selectedPerson.temperatureHistory}
+                        respiratoryRateData={selectedPerson.respiratoryRateHistory}
+                        heartRateLatest={`${selectedPerson.heartRate} bpm`} 
+                        temperatureLatest={`${selectedPerson.temperature}°F`}
+                        respiratoryRateLatest={`${selectedPerson.respiratoryRate} bpm`}
+                        status={selectedPerson.status} 
+                        bloodGroup={selectedPerson.bloodGroup} 
+                        activity={selectedPerson.connected ? 'Active' : 'Inactive'} 
+                      />
                     </div> : <div className="flex items-center justify-center h-40 text-gray-500">
                       <div className="text-center">
                         <WifiOff className="w-12 h-12 mx-auto mb-2 opacity-50" />

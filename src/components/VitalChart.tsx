@@ -9,6 +9,7 @@ interface VitalData {
   time: string;
   heartRate: number;
   temperature: number;
+  respiratoryRate: number;
   status: number;
   bloodGroup: number;
   activity: number;
@@ -25,8 +26,13 @@ interface VitalChartProps {
     time: string;
     value: number;
   }>;
+  respiratoryRateData: Array<{
+    time: string;
+    value: number;
+  }>;
   heartRateLatest: string;
   temperatureLatest: string;
+  respiratoryRateLatest: string;
   status: string;
   bloodGroup: string;
   activity: string;
@@ -37,13 +43,15 @@ const VitalChart = ({
   subtitle,
   heartRateData,
   temperatureData,
+  respiratoryRateData,
   heartRateLatest,
   temperatureLatest,
+  respiratoryRateLatest,
   status,
   bloodGroup,
   activity
 }: VitalChartProps) => {
-  const [selectedVital, setSelectedVital] = useState<'heartRate' | 'temperature' | 'status' | 'bloodGroup' | 'activity'>('heartRate');
+  const [selectedVital, setSelectedVital] = useState<'heartRate' | 'temperature' | 'respiratoryRate' | 'status' | 'bloodGroup' | 'activity'>('heartRate');
 
   // Generate mock data for status, bloodGroup, and activity over time
   const statusData = heartRateData.map((item, index) => ({
@@ -66,6 +74,7 @@ const VitalChart = ({
     time: hrItem.time,
     heartRate: hrItem.value,
     temperature: temperatureData[index]?.value || 0,
+    respiratoryRate: respiratoryRateData[index]?.value || 0,
     status: statusData[index]?.value || 1,
     bloodGroup: bloodGroupData[index]?.value || 1,
     activity: activityData[index]?.value || 50
@@ -88,6 +97,15 @@ const VitalChart = ({
       unit: '°F', 
       normalRange: '97-99°F', 
       latest: temperatureLatest,
+      type: 'line'
+    },
+    { 
+      value: 'respiratoryRate', 
+      label: 'Respiratory Rate', 
+      color: '#06b6d4', 
+      unit: 'bpm', 
+      normalRange: '12-20 bpm', 
+      latest: respiratoryRateLatest,
       type: 'line'
     },
     { 
@@ -133,7 +151,7 @@ const VitalChart = ({
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center space-x-3">
           <p className="text-gray-600 text-xs">{subtitle}</p>
-          <Select value={selectedVital} onValueChange={(value: 'heartRate' | 'temperature' | 'status' | 'bloodGroup' | 'activity') => setSelectedVital(value)}>
+          <Select value={selectedVital} onValueChange={(value: 'heartRate' | 'temperature' | 'respiratoryRate' | 'status' | 'bloodGroup' | 'activity') => setSelectedVital(value)}>
             <SelectTrigger className="w-48 h-7 text-xs bg-white border-gray-200">
               <SelectValue />
             </SelectTrigger>
