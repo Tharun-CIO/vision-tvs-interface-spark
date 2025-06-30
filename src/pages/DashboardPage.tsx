@@ -9,6 +9,7 @@ import { Heart, Thermometer, User, MapPin, Wifi, LogOut, Settings, Ruler, Weight
 import PersonCard from "../components/PersonCard";
 import VitalChart from "../components/VitalChart";
 import EmployeeEntry from "../components/EmployeeEntry";
+
 interface WorkEntry {
   id: string;
   date: string;
@@ -293,6 +294,21 @@ const DashboardPage = ({
       day: 'numeric'
     });
   };
+
+  const getDisplayName = () => {
+    if (!selectedDevice) return "";
+    return selectedDevice.assignedPerson || selectedDevice.deviceName;
+  };
+
+  const getCurrentDate = () => {
+    return new Date().toLocaleDateString('en-US', {
+      weekday: 'long',
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    });
+  };
+
   return <div className="h-screen bg-gray-50 p-4 overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
@@ -300,7 +316,7 @@ const DashboardPage = ({
           <div>
             <h1 className="text-2xl font-bold text-gray-900">Device Health Overview</h1>
             <div className="flex items-center space-x-4 mt-1">
-              <p className="text-gray-500 text-sm">August 12, 2021</p>
+              <p className="text-gray-500 text-sm">{getCurrentDate()}</p>
               <div className="flex items-center space-x-2">
                 <div className="flex items-center space-x-1">
                   
@@ -618,7 +634,8 @@ const DashboardPage = ({
               {/* Previous Work Section */}
               {selectedDevice && <Card className="bg-white rounded-2xl shadow-sm border-0">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-gray-900 text-lg">Previous Work - {selectedDevice.assignedPerson}</CardTitle>
+                    <CardTitle className="text-gray-900 text-lg">Previous Work - {getDisplayName()}</CardTitle>
+                    <p className="text-sm text-gray-500">Device: {selectedDevice.deviceName} | {getCurrentDate()}</p>
                   </CardHeader>
                   <CardContent className="p-4 pt-0">
                     <div className="space-y-3">
@@ -636,6 +653,8 @@ const DashboardPage = ({
                                 <Badge variant="outline" className="text-xs">
                                   {work.type}
                                 </Badge>
+                                <span className="text-xs text-gray-400">•</span>
+                                <span className="text-xs text-blue-600">Device: {selectedDevice.deviceName}</span>
                               </div>
                             </div>
                           </div>
@@ -646,7 +665,8 @@ const DashboardPage = ({
                         </div>)}
                       {selectedDevice.previousWork.length === 0 && <div className="text-center py-8 text-gray-500">
                           <FileText className="w-12 h-12 mx-auto mb-2 opacity-50" />
-                          <p className="text-sm">No previous work records found</p>
+                          <p className="text-sm">No previous work records found for {getDisplayName()}</p>
+                          <p className="text-xs text-gray-400">Device: {selectedDevice.deviceName}</p>
                         </div>}
                     </div>
                   </CardContent>
