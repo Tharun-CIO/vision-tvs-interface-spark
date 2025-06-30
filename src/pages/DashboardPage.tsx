@@ -381,15 +381,15 @@ const DashboardPage = ({
 
               {selectedDevice ? <div className="text-center h-full flex flex-col justify-between">
                   <div className="mb-4">
-                    <div className="w-24 h-24 mx-auto mb-3 rounded-2xl bg-blue-100 flex items-center justify-center">
-                      <Monitor className="w-12 h-12 text-blue-600" />
+                    <div className="w-20 h-20 mx-auto mb-3 rounded-2xl bg-blue-100 flex items-center justify-center">
+                      <Monitor className="w-10 h-10 text-blue-600" />
                     </div>
-                    <h3 className="text-xl font-bold text-gray-900 mb-1">{selectedDevice.deviceName}</h3>
+                    <h3 className="text-lg font-bold text-gray-900 mb-1">{selectedDevice.deviceName}</h3>
                     <p className="text-gray-600 text-sm">Assigned to: {selectedDevice.assignedPerson}</p>
                     <p className="text-gray-500 text-xs mt-1">MAC: {selectedDevice.mac}</p>
                     
                     {/* Connection Status */}
-                    <div className="flex items-center justify-center space-x-2 mt-3">
+                    <div className="flex items-center justify-center space-x-2 mt-2">
                       <div className={`w-2 h-2 rounded-full ${selectedDevice.connected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></div>
                       <span className={`text-xs ${selectedDevice.connected ? 'text-green-600' : 'text-red-600'}`}>
                         {selectedDevice.connected ? 'Connected' : 'Disconnected'}
@@ -397,7 +397,7 @@ const DashboardPage = ({
                     </div>
 
                     {/* Status Badge */}
-                    <div className="mt-3">
+                    <div className="mt-2">
                       <Badge className={`${selectedDevice.status === 'normal' ? 'bg-green-100 text-green-800' : selectedDevice.status === 'warning' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
                         Status: {selectedDevice.status.toUpperCase()}
                       </Badge>
@@ -423,16 +423,16 @@ const DashboardPage = ({
 
           {/* Employee Details */}
           <Card className="bg-white rounded-2xl shadow-sm border-0 flex-1">
-            <CardHeader className="pb-2">
-              <CardTitle className="text-gray-900 text-lg">Employee Details</CardTitle>
+            <CardHeader className="pb-3 px-4 pt-4">
+              <CardTitle className="text-gray-900 text-base">Employee Details</CardTitle>
             </CardHeader>
-            <CardContent className="p-4">
+            <CardContent className="p-4 pt-0">
               {selectedDevice ? (
-                <div className="space-y-4">
+                <div className="space-y-3">
                   {/* Employee Selection Dropdown */}
-                  <div>
+                  <div className="mb-3">
                     <Select value={selectedDevice.id} onValueChange={handleDeviceSelect}>
-                      <SelectTrigger className="w-full bg-white border-gray-200">
+                      <SelectTrigger className="w-full bg-white border-gray-200 h-9">
                         <SelectValue placeholder="Select employee" />
                       </SelectTrigger>
                       <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
@@ -449,51 +449,53 @@ const DashboardPage = ({
                   </div>
 
                   {/* Employee Information */}
-                  <div className="space-y-3">
+                  <div className="space-y-2">
                     <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
-                      <User className="w-4 h-4 text-blue-600" />
-                      <div>
-                        <p className="text-xs text-gray-500">Name</p>
-                        <p className="text-sm font-medium text-gray-900">{selectedDevice.assignedPerson}</p>
+                      <User className="w-4 h-4 text-blue-600 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-gray-500 mb-0.5">Name</p>
+                        <p className="text-sm font-medium text-gray-900 truncate">{selectedDevice.assignedPerson}</p>
+                      </div>
+                    </div>
+
+                    <div className="grid grid-cols-2 gap-2">
+                      <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
+                        <Ruler className="w-4 h-4 text-green-600 flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-gray-500 mb-0.5">Height</p>
+                          <p className="text-sm font-medium text-gray-900">{selectedDevice.height}</p>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
+                        <Weight className="w-4 h-4 text-purple-600 flex-shrink-0" />
+                        <div className="flex-1 min-w-0">
+                          <p className="text-xs text-gray-500 mb-0.5">Weight</p>
+                          <p className="text-sm font-medium text-gray-900">{selectedDevice.weight}</p>
+                        </div>
                       </div>
                     </div>
 
                     <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
-                      <Ruler className="w-4 h-4 text-green-600" />
-                      <div>
-                        <p className="text-xs text-gray-500">Height</p>
-                        <p className="text-sm font-medium text-gray-900">{selectedDevice.height}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
-                      <Weight className="w-4 h-4 text-purple-600" />
-                      <div>
-                        <p className="text-xs text-gray-500">Weight</p>
-                        <p className="text-sm font-medium text-gray-900">{selectedDevice.weight}</p>
-                      </div>
-                    </div>
-
-                    <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
-                      <Droplets className="w-4 h-4 text-red-600" />
-                      <div>
-                        <p className="text-xs text-gray-500">Blood Group</p>
+                      <Droplets className="w-4 h-4 text-red-600 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-gray-500 mb-0.5">Blood Group</p>
                         <p className="text-sm font-medium text-gray-900">{selectedDevice.bloodGroup}</p>
                       </div>
                     </div>
 
                     <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
-                      <Phone className="w-4 h-4 text-orange-600" />
-                      <div>
-                        <p className="text-xs text-gray-500">Contact Number</p>
+                      <Phone className="w-4 h-4 text-orange-600 flex-shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-xs text-gray-500 mb-0.5">Contact</p>
                         <p className="text-sm font-medium text-gray-900">{selectedDevice.contactNumber}</p>
                       </div>
                     </div>
                   </div>
                 </div>
               ) : (
-                <div className="text-center py-8 text-gray-500">
-                  <User className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                <div className="text-center py-6 text-gray-500">
+                  <User className="w-10 h-10 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">Select a device to view employee details</p>
                 </div>
               )}
