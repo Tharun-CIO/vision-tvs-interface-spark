@@ -510,16 +510,14 @@ const DashboardPage = ({
                 <Card className="bg-white rounded-2xl shadow-sm border-0">
                   <CardContent className="p-3">
                     <div className="flex items-center space-x-2">
-                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                        <Power className="w-4 h-4 text-blue-600" />
+                      <div className="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
+                        <Power className="w-4 h-4 text-yellow-600" />
                       </div>
                       <div>
                         <h3 className="font-semibold text-gray-900 text-xs">Blood pressure</h3>
                         <div className="flex items-center space-x-1 mt-1">
-                          <Badge className={`text-xs ${selectedDevice.status === 'normal' ? 'bg-green-100 text-green-800' : selectedDevice.status === 'warning' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
-                            {selectedDevice.status}
-                          </Badge>
-                          <div className={`w-1.5 h-1.5 rounded-full ${selectedDevice.connected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></div>
+                          <span className="text-lg font-bold text-gray-900">{selectedDevice.connected ? '120/80' : '--/--'}</span>
+                          <span className="text-xs text-gray-400">mmHg</span>
                         </div>
                       </div>
                     </div>
