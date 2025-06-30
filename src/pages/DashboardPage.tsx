@@ -9,7 +9,6 @@ import { Heart, Thermometer, User, MapPin, Wifi, LogOut, Settings, Ruler, Weight
 import PersonCard from "../components/PersonCard";
 import VitalChart from "../components/VitalChart";
 import EmployeeEntry from "../components/EmployeeEntry";
-
 interface WorkEntry {
   id: string;
   date: string;
@@ -294,12 +293,10 @@ const DashboardPage = ({
       day: 'numeric'
     });
   };
-
   const getDisplayName = () => {
     if (!selectedDevice) return "";
     return selectedDevice.assignedPerson || selectedDevice.deviceName;
   };
-
   const getCurrentDate = () => {
     return new Date().toLocaleDateString('en-US', {
       weekday: 'long',
@@ -308,7 +305,6 @@ const DashboardPage = ({
       day: 'numeric'
     });
   };
-
   return <div className="h-screen bg-gray-50 p-4 overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
@@ -379,6 +375,9 @@ const DashboardPage = ({
                             <div className="flex items-center justify-between">
                               <span className="font-medium text-gray-900">{device.deviceName}</span>
                               <div className="flex items-center space-x-2">
+                                <Badge className={`text-xs ${device.status === 'normal' ? 'bg-green-100 text-green-800' : device.status === 'warning' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
+                                  {device.status}
+                                </Badge>
                                 <div className={`w-1.5 h-1.5 rounded-full ${device.connected ? 'bg-green-400' : 'bg-gray-400'}`}></div>
                               </div>
                             </div>
@@ -643,7 +642,7 @@ const DashboardPage = ({
                             </div>
                             <div>
                               <p className="font-medium text-gray-900 text-sm">{work.title}</p>
-                              <p className="text-xs text-gray-500">{work.description}</p>
+                              
                               <div className="flex items-center space-x-2 mt-1">
                                 <span className="text-xs text-gray-400">{formatDate(work.date)}</span>
                                 <span className="text-xs text-gray-400">•</span>
