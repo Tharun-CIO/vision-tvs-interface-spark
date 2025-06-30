@@ -511,7 +511,8 @@ const DashboardPage = ({
                         <Activity className="w-4 h-4 text-green-600" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900 text-xs">Activity</h3>
+                        <h3 className="font-semibold text-gray-900 text-xs">Body motion
+                    </h3>
                         <div className="flex items-baseline space-x-1 mt-1">
                           <span className="text-lg font-bold text-gray-900">{selectedPerson.connected ? 'Active' : 'Inactive'}</span>
                         </div>
