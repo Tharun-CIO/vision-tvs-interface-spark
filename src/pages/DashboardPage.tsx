@@ -5,7 +5,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Heart, Thermometer, User, MapPin, Wifi, LogOut, Settings, Ruler, Weight, Droplets, Search, Bell, WifiOff, Power, Download, FileText, UserPlus, Activity, Zap, Wind, Monitor } from "lucide-react";
+import { Heart, Thermometer, User, MapPin, Wifi, LogOut, Settings, Ruler, Weight, Droplets, Search, Bell, WifiOff, Power, Download, FileText, UserPlus, Activity, Zap, Wind, Monitor, Phone } from "lucide-react";
 import PersonCard from "../components/PersonCard";
 import VitalChart from "../components/VitalChart";
 import EmployeeEntry from "../components/EmployeeEntry";
@@ -32,6 +32,7 @@ interface Device {
   height: string;
   weight: string;
   bloodGroup: string;
+  contactNumber: string;
   respiratoryRate: number;
   photo: string;
   connected: boolean;
@@ -74,6 +75,7 @@ const DashboardPage = ({
     height: "6'0\"",
     weight: "180 lbs",
     bloodGroup: "O+",
+    contactNumber: "+1-555-0123",
     photo: "/api/placeholder/150/150",
     connected: true,
     heartRateHistory: [{
@@ -170,6 +172,7 @@ const DashboardPage = ({
     height: "5'6\"",
     weight: "140 lbs",
     bloodGroup: "A-",
+    contactNumber: "+1-555-0456",
     photo: "/api/placeholder/150/150",
     connected: false,
     heartRateHistory: [{
@@ -418,38 +421,82 @@ const DashboardPage = ({
             </CardContent>
           </Card>
 
-          {/* Device List */}
-          <Card className="bg-white rounded-2xl shadow-sm flex-1">
+          {/* Employee Details */}
+          <Card className="bg-white rounded-2xl shadow-sm border-0 flex-1">
             <CardHeader className="pb-2">
-              <CardTitle className="text-gray-900 text-lg">Devices ({devices.length})</CardTitle>
+              <CardTitle className="text-gray-900 text-lg">Employee Details</CardTitle>
             </CardHeader>
             <CardContent className="p-4">
-              <div className="space-y-2">
-                {devices.map(device => <div key={device.id} onClick={() => setSelectedDevice(device)} className={`p-3 rounded-xl cursor-pointer transition-all ${selectedDevice?.id === device.id ? 'bg-blue-50 border border-blue-200' : 'bg-gray-50 hover:bg-gray-100'}`}>
-                    <div className="flex items-center justify-between">
-                      <div className="flex items-center space-x-2">
-                        <div className="w-6 h-6 bg-blue-100 rounded flex items-center justify-center">
-                          <Monitor className="w-3 h-3 text-blue-600" />
-                        </div>
-                        <div>
-                          <p className="text-sm font-medium text-gray-900">{device.deviceName}</p>
-                          <div className="flex items-center space-x-2">
-                            <Badge className={`text-xs ${device.status === 'normal' ? 'bg-green-100 text-green-800' : device.status === 'warning' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
-                              {device.status}
-                            </Badge>
-                            <div className={`w-1.5 h-1.5 rounded-full ${device.connected ? 'bg-green-400' : 'bg-gray-400'}`}></div>
-                          </div>
-                        </div>
+              {selectedDevice ? (
+                <div className="space-y-4">
+                  {/* Employee Selection Dropdown */}
+                  <div>
+                    <Select value={selectedDevice.id} onValueChange={handleDeviceSelect}>
+                      <SelectTrigger className="w-full bg-white border-gray-200">
+                        <SelectValue placeholder="Select employee" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
+                        {devices.map(device => (
+                          <SelectItem key={device.id} value={device.id} className="cursor-pointer hover:bg-gray-50">
+                            <div className="flex items-center space-x-2">
+                              <User className="w-4 h-4 text-blue-600" />
+                              <span>{device.assignedPerson}</span>
+                            </div>
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+
+                  {/* Employee Information */}
+                  <div className="space-y-3">
+                    <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
+                      <User className="w-4 h-4 text-blue-600" />
+                      <div>
+                        <p className="text-xs text-gray-500">Name</p>
+                        <p className="text-sm font-medium text-gray-900">{selectedDevice.assignedPerson}</p>
                       </div>
-                      <Button onClick={e => {
-                    e.stopPropagation();
-                    handleConnect(device.id);
-                  }} size="sm" variant={device.connected ? "destructive" : "default"} className="text-xs px-2 py-1 h-6">
-                        {device.connected ? <WifiOff className="w-3 h-3" /> : <Wifi className="w-3 h-3" />}
-                      </Button>
                     </div>
-                  </div>)}
-              </div>
+
+                    <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
+                      <Ruler className="w-4 h-4 text-green-600" />
+                      <div>
+                        <p className="text-xs text-gray-500">Height</p>
+                        <p className="text-sm font-medium text-gray-900">{selectedDevice.height}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
+                      <Weight className="w-4 h-4 text-purple-600" />
+                      <div>
+                        <p className="text-xs text-gray-500">Weight</p>
+                        <p className="text-sm font-medium text-gray-900">{selectedDevice.weight}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
+                      <Droplets className="w-4 h-4 text-red-600" />
+                      <div>
+                        <p className="text-xs text-gray-500">Blood Group</p>
+                        <p className="text-sm font-medium text-gray-900">{selectedDevice.bloodGroup}</p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center space-x-2 p-2 bg-gray-50 rounded-lg">
+                      <Phone className="w-4 h-4 text-orange-600" />
+                      <div>
+                        <p className="text-xs text-gray-500">Contact Number</p>
+                        <p className="text-sm font-medium text-gray-900">{selectedDevice.contactNumber}</p>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="text-center py-8 text-gray-500">
+                  <User className="w-12 h-12 mx-auto mb-2 opacity-50" />
+                  <p className="text-sm">Select a device to view employee details</p>
+                </div>
+              )}
             </CardContent>
           </Card>
         </div>
