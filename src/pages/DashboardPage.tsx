@@ -9,6 +9,7 @@ import { Heart, Thermometer, User, MapPin, Wifi, LogOut, Settings, Ruler, Weight
 import PersonCard from "../components/PersonCard";
 import VitalChart from "../components/VitalChart";
 import EmployeeEntry from "../components/EmployeeEntry";
+
 interface WorkEntry {
   id: string;
   date: string;
@@ -307,35 +308,6 @@ const DashboardPage = ({
                 </div>
               </div>
             </div>
-          </div>
-          
-          {/* Device Selector Dropdown */}
-          <div className="min-w-[250px]">
-            <Select value={selectedDevice?.id || ""} onValueChange={handleDeviceSelect}>
-              <SelectTrigger className="w-full bg-white border-gray-200">
-                <SelectValue placeholder="Select a device" />
-              </SelectTrigger>
-              <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
-                {devices.map(device => <SelectItem key={device.id} value={device.id} className="cursor-pointer hover:bg-gray-50">
-                    <div className="flex items-center space-x-3 w-full">
-                      <div className="w-6 h-6 bg-blue-100 rounded flex items-center justify-center">
-                        <Monitor className="w-3 h-3 text-blue-600" />
-                      </div>
-                      <div className="flex-1">
-                        <div className="flex items-center justify-between">
-                          <span className="font-medium text-gray-900">{device.deviceName}</span>
-                          <div className="flex items-center space-x-2">
-                            <Badge className={`text-xs ${device.status === 'normal' ? 'bg-green-100 text-green-800' : device.status === 'warning' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
-                              {device.status}
-                            </Badge>
-                            <div className={`w-1.5 h-1.5 rounded-full ${device.connected ? 'bg-green-400' : 'bg-gray-400'}`}></div>
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  </SelectItem>)}
-              </SelectContent>
-            </Select>
           </div>
         </div>
         
