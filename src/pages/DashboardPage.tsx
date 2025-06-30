@@ -9,7 +9,6 @@ import { Heart, Thermometer, User, MapPin, Wifi, LogOut, Settings, Ruler, Weight
 import PersonCard from "../components/PersonCard";
 import VitalChart from "../components/VitalChart";
 import EmployeeEntry from "../components/EmployeeEntry";
-
 interface WorkEntry {
   id: string;
   date: string;
@@ -304,10 +303,8 @@ const DashboardPage = ({
               <p className="text-gray-500 text-sm">August 12, 2021</p>
               <div className="flex items-center space-x-2">
                 <div className="flex items-center space-x-1">
-                  <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-                  <span className="text-sm text-gray-600">
-                    {getConnectionStatus().connected}/{getConnectionStatus().total} Connected
-                  </span>
+                  
+                  
                 </div>
               </div>
             </div>
@@ -427,8 +424,7 @@ const DashboardPage = ({
               <CardTitle className="text-gray-900 text-base">Employee Details</CardTitle>
             </CardHeader>
             <CardContent className="p-4 pt-0">
-              {selectedDevice ? (
-                <div className="space-y-3">
+              {selectedDevice ? <div className="space-y-3">
                   {/* Employee Selection Dropdown */}
                   <div className="mb-3">
                     <Select value={selectedDevice.id} onValueChange={handleDeviceSelect}>
@@ -436,14 +432,12 @@ const DashboardPage = ({
                         <SelectValue placeholder="Select employee" />
                       </SelectTrigger>
                       <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
-                        {devices.map(device => (
-                          <SelectItem key={device.id} value={device.id} className="cursor-pointer hover:bg-gray-50">
+                        {devices.map(device => <SelectItem key={device.id} value={device.id} className="cursor-pointer hover:bg-gray-50">
                             <div className="flex items-center space-x-2">
                               <User className="w-4 h-4 text-blue-600" />
                               <span>{device.assignedPerson}</span>
                             </div>
-                          </SelectItem>
-                        ))}
+                          </SelectItem>)}
                       </SelectContent>
                     </Select>
                   </div>
@@ -492,13 +486,10 @@ const DashboardPage = ({
                       </div>
                     </div>
                   </div>
-                </div>
-              ) : (
-                <div className="text-center py-6 text-gray-500">
+                </div> : <div className="text-center py-6 text-gray-500">
                   <User className="w-10 h-10 mx-auto mb-2 opacity-50" />
                   <p className="text-sm">Select a device to view employee details</p>
-                </div>
-              )}
+                </div>}
             </CardContent>
           </Card>
         </div>
