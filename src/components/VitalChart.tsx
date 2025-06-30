@@ -10,9 +10,6 @@ interface VitalData {
   heartRate: number;
   temperature: number;
   respiratoryRate: number;
-  status: number;
-  bloodGroup: number;
-  activity: number;
 }
 
 interface VitalChartProps {
@@ -51,33 +48,14 @@ const VitalChart = ({
   bloodGroup,
   activity
 }: VitalChartProps) => {
-  const [selectedVital, setSelectedVital] = useState<'heartRate' | 'temperature' | 'respiratoryRate' | 'status' | 'bloodGroup' | 'activity'>('heartRate');
-
-  // Generate mock data for status, bloodGroup, and activity over time
-  const statusData = heartRateData.map((item, index) => ({
-    time: item.time,
-    value: status === 'normal' ? 1 : status === 'warning' ? 2 : 3
-  }));
-
-  const bloodGroupData = heartRateData.map((item, index) => ({
-    time: item.time,
-    value: bloodGroup === 'O+' ? 1 : bloodGroup === 'A-' ? 2 : bloodGroup === 'B+' ? 3 : 4
-  }));
-
-  const activityData = heartRateData.map((item, index) => ({
-    time: item.time,
-    value: activity === 'Active' ? Math.floor(Math.random() * 30) + 70 : Math.floor(Math.random() * 20) + 30
-  }));
+  const [selectedVital, setSelectedVital] = useState<'heartRate' | 'temperature' | 'respiratoryRate'>('heartRate');
 
   // Combine the data
   const combinedData: VitalData[] = heartRateData.map((hrItem, index) => ({
     time: hrItem.time,
     heartRate: hrItem.value,
     temperature: temperatureData[index]?.value || 0,
-    respiratoryRate: respiratoryRateData[index]?.value || 0,
-    status: statusData[index]?.value || 1,
-    bloodGroup: bloodGroupData[index]?.value || 1,
-    activity: activityData[index]?.value || 50
+    respiratoryRate: respiratoryRateData[index]?.value || 0
   }));
 
   const vitalOptions = [
@@ -107,33 +85,6 @@ const VitalChart = ({
       normalRange: '12-20 bpm', 
       latest: respiratoryRateLatest,
       type: 'line'
-    },
-    { 
-      value: 'status', 
-      label: 'Status', 
-      color: '#10b981', 
-      unit: '', 
-      normalRange: 'Normal', 
-      latest: status,
-      type: 'bar'
-    },
-    { 
-      value: 'bloodGroup', 
-      label: 'Blood Group', 
-      color: '#f59e0b', 
-      unit: '', 
-      normalRange: 'Type', 
-      latest: bloodGroup,
-      type: 'bar'
-    },
-    { 
-      value: 'activity', 
-      label: 'Activity Level', 
-      color: '#8b5cf6', 
-      unit: '%', 
-      normalRange: '60-100%', 
-      latest: activity,
-      type: 'line'
     }
   ];
 
@@ -151,7 +102,7 @@ const VitalChart = ({
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center space-x-3">
           <p className="text-gray-600 text-xs">{subtitle}</p>
-          <Select value={selectedVital} onValueChange={(value: 'heartRate' | 'temperature' | 'respiratoryRate' | 'status' | 'bloodGroup' | 'activity') => setSelectedVital(value)}>
+          <Select value={selectedVital} onValueChange={(value: 'heartRate' | 'temperature' | 'respiratoryRate') => setSelectedVital(value)}>
             <SelectTrigger className="w-48 h-7 text-xs bg-white border-gray-200">
               <SelectValue />
             </SelectTrigger>
@@ -177,116 +128,65 @@ const VitalChart = ({
       </div>
       <ChartContainer config={chartConfig} className="h-full w-full">
         <ResponsiveContainer width="100%" height="100%">
-          {currentVital.type === 'line' ? (
-            <LineChart data={combinedData} margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5
-            }}>
-              <XAxis 
-                dataKey="time" 
-                tick={{
-                  fill: '#6b7280',
-                  fontSize: 10
-                }} 
-                axisLine={{
-                  stroke: '#d1d5db'
-                }} 
-                tickLine={{
-                  stroke: '#d1d5db'
-                }} 
-              />
-              <YAxis 
-                tick={{
-                  fill: '#6b7280',
-                  fontSize: 10
-                }} 
-                axisLine={{
-                  stroke: '#d1d5db'
-                }} 
-                tickLine={{
-                  stroke: '#d1d5db'
-                }} 
-              />
-              <ChartTooltip 
-                content={<ChartTooltipContent />} 
-                labelStyle={{
-                  color: '#6b7280'
-                }} 
-                contentStyle={{
-                  backgroundColor: 'white',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '8px'
-                }} 
-              />
-              <Line 
-                type="monotone" 
-                dataKey={selectedVital} 
-                stroke={currentVital.color} 
-                strokeWidth={2} 
-                dot={{
-                  fill: currentVital.color,
-                  strokeWidth: 2,
-                  r: 3
-                }} 
-                activeDot={{
-                  r: 4,
-                  stroke: currentVital.color,
-                  strokeWidth: 2
-                }} 
-              />
-            </LineChart>
-          ) : (
-            <BarChart data={combinedData} margin={{
-              top: 5,
-              right: 30,
-              left: 20,
-              bottom: 5
-            }}>
-              <XAxis 
-                dataKey="time" 
-                tick={{
-                  fill: '#6b7280',
-                  fontSize: 10
-                }} 
-                axisLine={{
-                  stroke: '#d1d5db'
-                }} 
-                tickLine={{
-                  stroke: '#d1d5db'
-                }} 
-              />
-              <YAxis 
-                tick={{
-                  fill: '#6b7280',
-                  fontSize: 10
-                }} 
-                axisLine={{
-                  stroke: '#d1d5db'
-                }} 
-                tickLine={{
-                  stroke: '#d1d5db'
-                }} 
-              />
-              <ChartTooltip 
-                content={<ChartTooltipContent />} 
-                labelStyle={{
-                  color: '#6b7280'
-                }} 
-                contentStyle={{
-                  backgroundColor: 'white',
-                  border: '1px solid #d1d5db',
-                  borderRadius: '8px'
-                }} 
-              />
-              <Bar 
-                dataKey={selectedVital} 
-                fill={currentVital.color}
-                radius={[4, 4, 0, 0]}
-              />
-            </BarChart>
-          )}
+          <LineChart data={combinedData} margin={{
+            top: 5,
+            right: 30,
+            left: 20,
+            bottom: 5
+          }}>
+            <XAxis 
+              dataKey="time" 
+              tick={{
+                fill: '#6b7280',
+                fontSize: 10
+              }} 
+              axisLine={{
+                stroke: '#d1d5db'
+              }} 
+              tickLine={{
+                stroke: '#d1d5db'
+              }} 
+            />
+            <YAxis 
+              tick={{
+                fill: '#6b7280',
+                fontSize: 10
+              }} 
+              axisLine={{
+                stroke: '#d1d5db'
+              }} 
+              tickLine={{
+                stroke: '#d1d5db'
+              }} 
+            />
+            <ChartTooltip 
+              content={<ChartTooltipContent />} 
+              labelStyle={{
+                color: '#6b7280'
+              }} 
+              contentStyle={{
+                backgroundColor: 'white',
+                border: '1px solid #d1d5db',
+                borderRadius: '8px'
+              }} 
+            />
+            <Line 
+              type="monotone" 
+              dataKey={selectedVital} 
+              stroke={currentVital.color} 
+              strokeWidth={2} 
+              dot={{
+                fill: currentVital.color,
+                strokeWidth: 2,
+                r: 3
+              }} 
+              activeDot={{
+                r: 4,
+                stroke: currentVital.color,
+                strokeWidth: 2
+              }} 
+            />
+          </LineChart>
         </ResponsiveContainer>
       </ChartContainer>
     </div>
