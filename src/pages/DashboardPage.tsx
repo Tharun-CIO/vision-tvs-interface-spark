@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +9,6 @@ import { Heart, Thermometer, User, MapPin, Wifi, LogOut, Settings, Ruler, Weight
 import PersonCard from "../components/PersonCard";
 import VitalChart from "../components/VitalChart";
 import EmployeeEntry from "../components/EmployeeEntry";
-
 interface WorkEntry {
   id: string;
   date: string;
@@ -19,7 +17,6 @@ interface WorkEntry {
   type: string;
   downloadUrl: string;
 }
-
 interface Device {
   id: string;
   deviceName: string;
@@ -51,12 +48,10 @@ interface Device {
   }>;
   previousWork: WorkEntry[];
 }
-
 interface DashboardPageProps {
   onLogout: () => void;
   onShowAdmin: () => void;
 }
-
 const DashboardPage = ({
   onLogout,
   onShowAdmin
@@ -256,7 +251,6 @@ const DashboardPage = ({
       setSelectedDevice(devices[0]);
     }
   }, [devices, selectedDevice]);
-
   const handleConnect = (deviceId: string) => {
     setDevices(prev => prev.map(device => device.id === deviceId ? {
       ...device,
@@ -269,7 +263,6 @@ const DashboardPage = ({
       } : null);
     }
   };
-
   const getConnectionStatus = () => {
     const connected = devices.filter(d => d.connected).length;
     const total = devices.length;
@@ -278,20 +271,17 @@ const DashboardPage = ({
       total
     };
   };
-
   const handleDeviceSelect = (deviceId: string) => {
     const device = devices.find(d => d.id === deviceId);
     if (device) {
       setSelectedDevice(device);
     }
   };
-
   const handleDownload = (workEntry: WorkEntry) => {
     // Simulate download - in real app this would trigger actual file download
     console.log(`Downloading ${workEntry.title} for ${selectedDevice?.assignedPerson}`);
     // window.open(workEntry.downloadUrl, '_blank');
   };
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -300,7 +290,6 @@ const DashboardPage = ({
       day: 'numeric'
     });
   };
-
   return <div className="h-screen bg-gray-50 p-4 overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
@@ -412,22 +401,7 @@ const DashboardPage = ({
                   </div>
                   
                   {/* Device Info */}
-                  <div className="grid grid-cols-2 gap-3 mb-4">
-                    <div className="bg-gray-50 rounded-xl p-3 text-center">
-                      <div className="flex items-center justify-center mb-1">
-                        <MapPin className="w-3 h-3 text-gray-600 mr-1" />
-                      </div>
-                      <p className="text-gray-600 text-xs mb-1">Location</p>
-                      <p className="text-gray-900 font-semibold text-sm">{selectedDevice.location}</p>
-                    </div>
-                    <div className="bg-gray-50 rounded-xl p-3 text-center">
-                      <div className="flex items-center justify-center mb-1">
-                        <User className="w-3 h-3 text-gray-600 mr-1" />
-                      </div>
-                      <p className="text-gray-600 text-xs mb-1">User</p>
-                      <p className="text-gray-900 font-semibold text-sm">{selectedDevice.assignedPerson}</p>
-                    </div>
-                  </div>
+                  
 
                   {/* Connect Button */}
                   <Button onClick={() => handleConnect(selectedDevice.id)} className={`w-full ${selectedDevice.connected ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} text-white`}>
@@ -594,19 +568,7 @@ const DashboardPage = ({
                 </CardHeader>
                 <CardContent className="p-4 pt-0">
                   {selectedDevice.connected ? <div className="h-60">
-                      <VitalChart 
-                        title="Vital Signs" 
-                        subtitle="Real-time monitoring" 
-                        heartRateData={selectedDevice.heartRateHistory} 
-                        temperatureData={selectedDevice.temperatureHistory}
-                        respiratoryRateData={selectedDevice.respiratoryRateHistory}
-                        heartRateLatest={`${selectedDevice.heartRate} bpm`} 
-                        temperatureLatest={`${selectedDevice.temperature}°F`}
-                        respiratoryRateLatest={`${selectedDevice.respiratoryRate} bpm`}
-                        status={selectedDevice.status} 
-                        bloodGroup={selectedDevice.bloodGroup} 
-                        activity={selectedDevice.connected ? 'Active' : 'Inactive'} 
-                      />
+                      <VitalChart title="Vital Signs" subtitle="Real-time monitoring" heartRateData={selectedDevice.heartRateHistory} temperatureData={selectedDevice.temperatureHistory} respiratoryRateData={selectedDevice.respiratoryRateHistory} heartRateLatest={`${selectedDevice.heartRate} bpm`} temperatureLatest={`${selectedDevice.temperature}°F`} respiratoryRateLatest={`${selectedDevice.respiratoryRate} bpm`} status={selectedDevice.status} bloodGroup={selectedDevice.bloodGroup} activity={selectedDevice.connected ? 'Active' : 'Inactive'} />
                     </div> : <div className="flex items-center justify-center h-40 text-gray-500">
                       <div className="text-center">
                         <WifiOff className="w-12 h-12 mx-auto mb-2 opacity-50" />
@@ -666,5 +628,4 @@ const DashboardPage = ({
       </div>
     </div>;
 };
-
 export default DashboardPage;
