@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -5,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Heart, Thermometer, User, MapPin, Wifi, LogOut, Settings, Ruler, Weight, Droplets, Search, Bell, WifiOff, Power, Download, FileText, UserPlus, Activity, Zap, Wind } from "lucide-react";
+import { Heart, Thermometer, User, MapPin, Wifi, LogOut, Settings, Ruler, Weight, Droplets, Search, Bell, WifiOff, Power, Download, FileText, UserPlus, Activity, Zap, Wind, Monitor } from "lucide-react";
 import PersonCard from "../components/PersonCard";
 import VitalChart from "../components/VitalChart";
 import EmployeeEntry from "../components/EmployeeEntry";
@@ -18,9 +19,11 @@ interface WorkEntry {
   type: string;
   downloadUrl: string;
 }
-interface Person {
+
+interface Device {
   id: string;
-  name: string;
+  deviceName: string;
+  assignedPerson: string;
   age: number;
   gender: string;
   location: string;
@@ -48,19 +51,22 @@ interface Person {
   }>;
   previousWork: WorkEntry[];
 }
+
 interface DashboardPageProps {
   onLogout: () => void;
   onShowAdmin: () => void;
 }
+
 const DashboardPage = ({
   onLogout,
   onShowAdmin
 }: DashboardPageProps) => {
-  const [selectedPerson, setSelectedPerson] = useState<Person | null>(null);
+  const [selectedDevice, setSelectedDevice] = useState<Device | null>(null);
   const [isEmployeeEntryOpen, setIsEmployeeEntryOpen] = useState(false);
-  const [people, setPeople] = useState<Person[]>([{
+  const [devices, setDevices] = useState<Device[]>([{
     id: "1",
-    name: "John Doe",
+    deviceName: "HMD-01",
+    assignedPerson: "John Doe",
     age: 32,
     gender: "Male",
     location: "Building A, Floor 2",
@@ -155,7 +161,8 @@ const DashboardPage = ({
     }]
   }, {
     id: "2",
-    name: "Sarah Smith",
+    deviceName: "HMD-02",
+    assignedPerson: "Sarah Smith",
     age: 28,
     gender: "Female",
     location: "Building B, Floor 1",
@@ -243,43 +250,48 @@ const DashboardPage = ({
     }]
   }]);
 
-  // Auto-select first person on load
+  // Auto-select first device on load
   useEffect(() => {
-    if (people.length > 0 && !selectedPerson) {
-      setSelectedPerson(people[0]);
+    if (devices.length > 0 && !selectedDevice) {
+      setSelectedDevice(devices[0]);
     }
-  }, [people, selectedPerson]);
-  const handleConnect = (personId: string) => {
-    setPeople(prev => prev.map(person => person.id === personId ? {
-      ...person,
-      connected: !person.connected
-    } : person));
-    if (selectedPerson?.id === personId) {
-      setSelectedPerson(prev => prev ? {
+  }, [devices, selectedDevice]);
+
+  const handleConnect = (deviceId: string) => {
+    setDevices(prev => prev.map(device => device.id === deviceId ? {
+      ...device,
+      connected: !device.connected
+    } : device));
+    if (selectedDevice?.id === deviceId) {
+      setSelectedDevice(prev => prev ? {
         ...prev,
         connected: !prev.connected
       } : null);
     }
   };
+
   const getConnectionStatus = () => {
-    const connected = people.filter(p => p.connected).length;
-    const total = people.length;
+    const connected = devices.filter(d => d.connected).length;
+    const total = devices.length;
     return {
       connected,
       total
     };
   };
-  const handlePersonSelect = (personId: string) => {
-    const person = people.find(p => p.id === personId);
-    if (person) {
-      setSelectedPerson(person);
+
+  const handleDeviceSelect = (deviceId: string) => {
+    const device = devices.find(d => d.id === deviceId);
+    if (device) {
+      setSelectedDevice(device);
     }
   };
+
   const handleDownload = (workEntry: WorkEntry) => {
     // Simulate download - in real app this would trigger actual file download
-    console.log(`Downloading ${workEntry.title} for ${selectedPerson?.name}`);
+    console.log(`Downloading ${workEntry.title} for ${selectedDevice?.assignedPerson}`);
     // window.open(workEntry.downloadUrl, '_blank');
   };
+
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString('en-US', {
@@ -288,12 +300,13 @@ const DashboardPage = ({
       day: 'numeric'
     });
   };
+
   return <div className="h-screen bg-gray-50 p-4 overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-6">
           <div>
-            <h1 className="text-2xl font-bold text-gray-900">Health Overview</h1>
+            <h1 className="text-2xl font-bold text-gray-900">Device Health Overview</h1>
             <div className="flex items-center space-x-4 mt-1">
               <p className="text-gray-500 text-sm">August 12, 2021</p>
               <div className="flex items-center space-x-2">
@@ -307,29 +320,26 @@ const DashboardPage = ({
             </div>
           </div>
           
-          {/* Person Selector Dropdown */}
+          {/* Device Selector Dropdown */}
           <div className="min-w-[250px]">
-            <Select value={selectedPerson?.id || ""} onValueChange={handlePersonSelect}>
+            <Select value={selectedDevice?.id || ""} onValueChange={handleDeviceSelect}>
               <SelectTrigger className="w-full bg-white border-gray-200">
-                <SelectValue placeholder="Select a person" />
+                <SelectValue placeholder="Select a device" />
               </SelectTrigger>
               <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
-                {people.map(person => <SelectItem key={person.id} value={person.id} className="cursor-pointer hover:bg-gray-50">
+                {devices.map(device => <SelectItem key={device.id} value={device.id} className="cursor-pointer hover:bg-gray-50">
                     <div className="flex items-center space-x-3 w-full">
-                      <Avatar className="w-6 h-6">
-                        <AvatarImage src={person.photo} />
-                        <AvatarFallback className="bg-gray-200 text-gray-600 text-xs">
-                          {person.name.split(' ').map(n => n[0]).join('')}
-                        </AvatarFallback>
-                      </Avatar>
+                      <div className="w-6 h-6 bg-blue-100 rounded flex items-center justify-center">
+                        <Monitor className="w-3 h-3 text-blue-600" />
+                      </div>
                       <div className="flex-1">
                         <div className="flex items-center justify-between">
-                          <span className="font-medium text-gray-900">{person.name}</span>
+                          <span className="font-medium text-gray-900">{device.deviceName}</span>
                           <div className="flex items-center space-x-2">
-                            <Badge className={`text-xs ${person.status === 'normal' ? 'bg-green-100 text-green-800' : person.status === 'warning' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
-                              {person.status}
+                            <Badge className={`text-xs ${device.status === 'normal' ? 'bg-green-100 text-green-800' : device.status === 'warning' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
+                              {device.status}
                             </Badge>
-                            <div className={`w-1.5 h-1.5 rounded-full ${person.connected ? 'bg-green-400' : 'bg-gray-400'}`}></div>
+                            <div className={`w-1.5 h-1.5 rounded-full ${device.connected ? 'bg-green-400' : 'bg-gray-400'}`}></div>
                           </div>
                         </div>
                       </div>
@@ -372,51 +382,56 @@ const DashboardPage = ({
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-4 h-[calc(100vh-7rem)]">
-        {/* Left Sidebar - Person Profile */}
+        {/* Left Sidebar - Device Profile */}
         <div className="lg:col-span-1 flex flex-col space-y-4">
-          <Card className="bg-gray-800 text-white rounded-2xl overflow-hidden flex-1">
+          <Card className="bg-white rounded-2xl shadow-sm border-0 flex-1">
             <CardContent className="p-6">
-              {selectedPerson ? <div className="text-center h-full flex flex-col justify-between">
+              {selectedDevice ? <div className="text-center h-full flex flex-col justify-between">
                   <div className="mb-4">
-                    <Avatar className="w-24 h-24 mx-auto mb-3 rounded-2xl">
-                      <AvatarImage src={selectedPerson.photo} />
-                      <AvatarFallback className="bg-gray-700 text-white text-xl rounded-2xl">
-                        <User className="w-12 h-12" />
-                      </AvatarFallback>
-                    </Avatar>
-                    <h3 className="text-xl font-bold text-white mb-1">{selectedPerson.name}</h3>
-                    <p className="text-gray-300 text-sm">{selectedPerson.age} years • {selectedPerson.gender}</p>
+                    <div className="w-24 h-24 mx-auto mb-3 rounded-2xl bg-blue-100 flex items-center justify-center">
+                      <Monitor className="w-12 h-12 text-blue-600" />
+                    </div>
+                    <h3 className="text-xl font-bold text-gray-900 mb-1">{selectedDevice.deviceName}</h3>
+                    <p className="text-gray-600 text-sm">Assigned to: {selectedDevice.assignedPerson}</p>
+                    <p className="text-gray-500 text-xs mt-1">MAC: {selectedDevice.mac}</p>
                     
                     {/* Connection Status */}
                     <div className="flex items-center justify-center space-x-2 mt-3">
-                      <div className={`w-2 h-2 rounded-full ${selectedPerson.connected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></div>
-                      <span className={`text-xs ${selectedPerson.connected ? 'text-green-300' : 'text-red-300'}`}>
-                        {selectedPerson.connected ? 'Connected' : 'Disconnected'}
+                      <div className={`w-2 h-2 rounded-full ${selectedDevice.connected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></div>
+                      <span className={`text-xs ${selectedDevice.connected ? 'text-green-600' : 'text-red-600'}`}>
+                        {selectedDevice.connected ? 'Connected' : 'Disconnected'}
                       </span>
+                    </div>
+
+                    {/* Status Badge */}
+                    <div className="mt-3">
+                      <Badge className={`${selectedDevice.status === 'normal' ? 'bg-green-100 text-green-800' : selectedDevice.status === 'warning' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
+                        Status: {selectedDevice.status.toUpperCase()}
+                      </Badge>
                     </div>
                   </div>
                   
-                  {/* Physical Stats */}
+                  {/* Device Info */}
                   <div className="grid grid-cols-2 gap-3 mb-4">
-                    <div className="bg-orange-200 bg-opacity-20 rounded-xl p-3 text-center">
+                    <div className="bg-gray-50 rounded-xl p-3 text-center">
                       <div className="flex items-center justify-center mb-1">
-                        <Ruler className="w-3 h-3 text-orange-300 mr-1" />
+                        <MapPin className="w-3 h-3 text-gray-600 mr-1" />
                       </div>
-                      <p className="text-orange-200 text-xs mb-1">Height</p>
-                      <p className="text-white font-semibold text-sm">{selectedPerson.height.replace('"', ' cm').replace("'", '').replace('6', '170').replace('5', '165')}</p>
+                      <p className="text-gray-600 text-xs mb-1">Location</p>
+                      <p className="text-gray-900 font-semibold text-sm">{selectedDevice.location}</p>
                     </div>
-                    <div className="bg-blue-200 bg-opacity-20 rounded-xl p-3 text-center">
+                    <div className="bg-gray-50 rounded-xl p-3 text-center">
                       <div className="flex items-center justify-center mb-1">
-                        <Weight className="w-3 h-3 text-blue-300 mr-1" />
+                        <User className="w-3 h-3 text-gray-600 mr-1" />
                       </div>
-                      <p className="text-blue-200 text-xs mb-1">Weight</p>
-                      <p className="text-white font-semibold text-sm">{selectedPerson.weight.replace('lbs', 'kg').replace('180', '72').replace('140', '58')}</p>
+                      <p className="text-gray-600 text-xs mb-1">User</p>
+                      <p className="text-gray-900 font-semibold text-sm">{selectedDevice.assignedPerson}</p>
                     </div>
                   </div>
 
                   {/* Connect Button */}
-                  <Button onClick={() => handleConnect(selectedPerson.id)} className={`w-full ${selectedPerson.connected ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} text-white`}>
-                    {selectedPerson.connected ? <>
+                  <Button onClick={() => handleConnect(selectedDevice.id)} className={`w-full ${selectedDevice.connected ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} text-white`}>
+                    {selectedDevice.connected ? <>
                         <WifiOff className="w-4 h-4 mr-2" />
                         Disconnect
                       </> : <>
@@ -425,43 +440,40 @@ const DashboardPage = ({
                       </>}
                   </Button>
                 </div> : <div className="text-center">
-                  <User className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                  <p>Select an employee</p>
+                  <Monitor className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                  <p>Select a device</p>
                 </div>}
             </CardContent>
           </Card>
 
-          {/* Employee List */}
+          {/* Device List */}
           <Card className="bg-white rounded-2xl shadow-sm flex-1">
             <CardHeader className="pb-2">
-              <CardTitle className="text-gray-900 text-lg">Employees ({people.length})</CardTitle>
+              <CardTitle className="text-gray-900 text-lg">Devices ({devices.length})</CardTitle>
             </CardHeader>
             <CardContent className="p-4">
               <div className="space-y-2">
-                {people.map(person => <div key={person.id} onClick={() => setSelectedPerson(person)} className={`p-3 rounded-xl cursor-pointer transition-all ${selectedPerson?.id === person.id ? 'bg-blue-50 border border-blue-200' : 'bg-gray-50 hover:bg-gray-100'}`}>
+                {devices.map(device => <div key={device.id} onClick={() => setSelectedDevice(device)} className={`p-3 rounded-xl cursor-pointer transition-all ${selectedDevice?.id === device.id ? 'bg-blue-50 border border-blue-200' : 'bg-gray-50 hover:bg-gray-100'}`}>
                     <div className="flex items-center justify-between">
                       <div className="flex items-center space-x-2">
-                        <Avatar className="w-6 h-6">
-                          <AvatarImage src={person.photo} />
-                          <AvatarFallback className="bg-gray-200 text-gray-600 text-xs">
-                            {person.name.split(' ').map(n => n[0]).join('')}
-                          </AvatarFallback>
-                        </Avatar>
+                        <div className="w-6 h-6 bg-blue-100 rounded flex items-center justify-center">
+                          <Monitor className="w-3 h-3 text-blue-600" />
+                        </div>
                         <div>
-                          <p className="text-sm font-medium text-gray-900">{person.name}</p>
+                          <p className="text-sm font-medium text-gray-900">{device.deviceName}</p>
                           <div className="flex items-center space-x-2">
-                            <Badge className={`text-xs ${person.status === 'normal' ? 'bg-green-100 text-green-800' : person.status === 'warning' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
-                              {person.status}
+                            <Badge className={`text-xs ${device.status === 'normal' ? 'bg-green-100 text-green-800' : device.status === 'warning' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
+                              {device.status}
                             </Badge>
-                            <div className={`w-1.5 h-1.5 rounded-full ${person.connected ? 'bg-green-400' : 'bg-gray-400'}`}></div>
+                            <div className={`w-1.5 h-1.5 rounded-full ${device.connected ? 'bg-green-400' : 'bg-gray-400'}`}></div>
                           </div>
                         </div>
                       </div>
                       <Button onClick={e => {
                     e.stopPropagation();
-                    handleConnect(person.id);
-                  }} size="sm" variant={person.connected ? "destructive" : "default"} className="text-xs px-2 py-1 h-6">
-                        {person.connected ? <WifiOff className="w-3 h-3" /> : <Wifi className="w-3 h-3" />}
+                    handleConnect(device.id);
+                  }} size="sm" variant={device.connected ? "destructive" : "default"} className="text-xs px-2 py-1 h-6">
+                        {device.connected ? <WifiOff className="w-3 h-3" /> : <Wifi className="w-3 h-3" />}
                       </Button>
                     </div>
                   </div>)}
@@ -472,7 +484,7 @@ const DashboardPage = ({
 
         {/* Main Content */}
         <div className="lg:col-span-3">
-          {selectedPerson ? <div className="space-y-4 h-full">
+          {selectedDevice ? <div className="space-y-4 h-full">
               {/* Status Cards */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
                 {/* Overall Status Card */}
@@ -485,10 +497,10 @@ const DashboardPage = ({
                       <div>
                         <h3 className="font-semibold text-gray-900 text-xs">Status</h3>
                         <div className="flex items-center space-x-1 mt-1">
-                          <Badge className={`text-xs ${selectedPerson.status === 'normal' ? 'bg-green-100 text-green-800' : selectedPerson.status === 'warning' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
-                            {selectedPerson.status}
+                          <Badge className={`text-xs ${selectedDevice.status === 'normal' ? 'bg-green-100 text-green-800' : selectedDevice.status === 'warning' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
+                            {selectedDevice.status}
                           </Badge>
-                          <div className={`w-1.5 h-1.5 rounded-full ${selectedPerson.connected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></div>
+                          <div className={`w-1.5 h-1.5 rounded-full ${selectedDevice.connected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></div>
                         </div>
                       </div>
                     </div>
@@ -500,12 +512,12 @@ const DashboardPage = ({
                   <CardContent className="p-3">
                     <div className="flex items-center space-x-2">
                       <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
-                        <Heart className={`w-4 h-4 text-red-600 ${selectedPerson.connected ? 'animate-heartbeat' : ''}`} />
+                        <Heart className={`w-4 h-4 text-red-600 ${selectedDevice.connected ? 'animate-heartbeat' : ''}`} />
                       </div>
                       <div>
                         <h3 className="font-semibold text-gray-900 text-xs">Heart Rate</h3>
                         <div className="flex items-baseline space-x-1 mt-1">
-                          <span className="text-lg font-bold text-gray-900">{selectedPerson.connected ? selectedPerson.heartRate : '--'}</span>
+                          <span className="text-lg font-bold text-gray-900">{selectedDevice.connected ? selectedDevice.heartRate : '--'}</span>
                           <span className="text-xs text-gray-400">bpm</span>
                         </div>
                       </div>
@@ -523,7 +535,7 @@ const DashboardPage = ({
                       <div>
                         <h3 className="font-semibold text-gray-900 text-xs">Temperature</h3>
                         <div className="flex items-baseline space-x-1 mt-1">
-                          <span className="text-lg font-bold text-gray-900">{selectedPerson.connected ? selectedPerson.temperature : '--'}</span>
+                          <span className="text-lg font-bold text-gray-900">{selectedDevice.connected ? selectedDevice.temperature : '--'}</span>
                           <span className="text-xs text-gray-400">°F</span>
                         </div>
                       </div>
@@ -541,7 +553,7 @@ const DashboardPage = ({
                       <div>
                         <h3 className="font-semibold text-gray-900 text-xs">Respiratory rate</h3>
                         <div className="flex items-baseline space-x-1 mt-1">
-                          <span className="text-lg font-bold text-gray-900">{selectedPerson.connected ? selectedPerson.respiratoryRate : '--'}</span>
+                          <span className="text-lg font-bold text-gray-900">{selectedDevice.connected ? selectedDevice.respiratoryRate : '--'}</span>
                           <span className="text-xs text-gray-400">bpm</span>
                         </div>
                       </div>
@@ -557,10 +569,9 @@ const DashboardPage = ({
                         <Activity className="w-4 h-4 text-green-600" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900 text-xs">Body motion
-                    </h3>
+                        <h3 className="font-semibold text-gray-900 text-xs">Body motion</h3>
                         <div className="flex items-baseline space-x-1 mt-1">
-                          <span className="text-lg font-bold text-gray-900">{selectedPerson.connected ? 'Active' : 'Inactive'}</span>
+                          <span className="text-lg font-bold text-gray-900">{selectedDevice.connected ? 'Active' : 'Inactive'}</span>
                         </div>
                       </div>
                     </div>
@@ -572,29 +583,29 @@ const DashboardPage = ({
               <Card className="bg-white rounded-2xl shadow-sm border-0 flex-1">
                 <CardHeader className="pb-3">
                   <div className="flex items-center justify-between">
-                    <CardTitle className="text-gray-900 text-lg">Live Monitoring</CardTitle>
+                    <CardTitle className="text-gray-900 text-lg">Live Monitoring - {selectedDevice.deviceName}</CardTitle>
                     <div className="flex items-center space-x-2">
-                      <div className={`w-2 h-2 rounded-full ${selectedPerson.connected ? 'bg-green-400 animate-pulse' : 'bg-gray-400'}`}></div>
+                      <div className={`w-2 h-2 rounded-full ${selectedDevice.connected ? 'bg-green-400 animate-pulse' : 'bg-gray-400'}`}></div>
                       <span className="text-sm text-gray-500">
-                        {selectedPerson.connected ? 'Live' : 'Offline'}
+                        {selectedDevice.connected ? 'Live' : 'Offline'}
                       </span>
                     </div>
                   </div>
                 </CardHeader>
                 <CardContent className="p-4 pt-0">
-                  {selectedPerson.connected ? <div className="h-60">
+                  {selectedDevice.connected ? <div className="h-60">
                       <VitalChart 
                         title="Vital Signs" 
                         subtitle="Real-time monitoring" 
-                        heartRateData={selectedPerson.heartRateHistory} 
-                        temperatureData={selectedPerson.temperatureHistory}
-                        respiratoryRateData={selectedPerson.respiratoryRateHistory}
-                        heartRateLatest={`${selectedPerson.heartRate} bpm`} 
-                        temperatureLatest={`${selectedPerson.temperature}°F`}
-                        respiratoryRateLatest={`${selectedPerson.respiratoryRate} bpm`}
-                        status={selectedPerson.status} 
-                        bloodGroup={selectedPerson.bloodGroup} 
-                        activity={selectedPerson.connected ? 'Active' : 'Inactive'} 
+                        heartRateData={selectedDevice.heartRateHistory} 
+                        temperatureData={selectedDevice.temperatureHistory}
+                        respiratoryRateData={selectedDevice.respiratoryRateHistory}
+                        heartRateLatest={`${selectedDevice.heartRate} bpm`} 
+                        temperatureLatest={`${selectedDevice.temperature}°F`}
+                        respiratoryRateLatest={`${selectedDevice.respiratoryRate} bpm`}
+                        status={selectedDevice.status} 
+                        bloodGroup={selectedDevice.bloodGroup} 
+                        activity={selectedDevice.connected ? 'Active' : 'Inactive'} 
                       />
                     </div> : <div className="flex items-center justify-center h-40 text-gray-500">
                       <div className="text-center">
@@ -607,13 +618,13 @@ const DashboardPage = ({
               </Card>
               
               {/* Previous Work Section */}
-              {selectedPerson && <Card className="bg-white rounded-2xl shadow-sm border-0">
+              {selectedDevice && <Card className="bg-white rounded-2xl shadow-sm border-0">
                   <CardHeader className="pb-2">
-                    <CardTitle className="text-gray-900 text-lg">Previous Work - {selectedPerson.name}</CardTitle>
+                    <CardTitle className="text-gray-900 text-lg">Previous Work - {selectedDevice.assignedPerson}</CardTitle>
                   </CardHeader>
                   <CardContent className="p-4 pt-0">
                     <div className="space-y-3">
-                      {selectedPerson.previousWork.map(work => <div key={work.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                      {selectedDevice.previousWork.map(work => <div key={work.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                           <div className="flex items-center space-x-3">
                             <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
                               <FileText className="w-4 h-4 text-blue-600" />
@@ -635,7 +646,7 @@ const DashboardPage = ({
                             Download
                           </Button>
                         </div>)}
-                      {selectedPerson.previousWork.length === 0 && <div className="text-center py-8 text-gray-500">
+                      {selectedDevice.previousWork.length === 0 && <div className="text-center py-8 text-gray-500">
                           <FileText className="w-12 h-12 mx-auto mb-2 opacity-50" />
                           <p className="text-sm">No previous work records found</p>
                         </div>}
@@ -645,9 +656,9 @@ const DashboardPage = ({
             </div> : <Card className="bg-white rounded-2xl shadow-sm border-0 h-full flex items-center justify-center">
               <CardContent>
                 <div className="text-center text-gray-500">
-                  <User className="w-16 h-16 mx-auto mb-4 opacity-50" />
-                  <p className="text-lg font-medium">Select an Employee</p>
-                  <p className="text-sm">Choose a person to view their health status</p>
+                  <Monitor className="w-16 h-16 mx-auto mb-4 opacity-50" />
+                  <p className="text-lg font-medium">Select a Device</p>
+                  <p className="text-sm">Choose a device to view health monitoring status</p>
                 </div>
               </CardContent>
             </Card>}
@@ -655,4 +666,5 @@ const DashboardPage = ({
       </div>
     </div>;
 };
+
 export default DashboardPage;
