@@ -1,3 +1,4 @@
+
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -5,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Avatar, AvatarImage, AvatarFallback } from "@/components/ui/avatar";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Heart, Thermometer, User, MapPin, Wifi, LogOut, Settings, Ruler, Weight, Droplets, Search, Bell, WifiOff, Power, Download, FileText, UserPlus } from "lucide-react";
+import { Heart, Thermometer, User, MapPin, Wifi, LogOut, Settings, Ruler, Weight, Droplets, Search, Bell, WifiOff, Power, Download, FileText, UserPlus, Activity, Zap } from "lucide-react";
 import PersonCard from "../components/PersonCard";
 import VitalChart from "../components/VitalChart";
 import EmployeeEntry from "../components/EmployeeEntry";
@@ -460,21 +461,21 @@ const DashboardPage = ({
           {selectedPerson ? (
             <div className="space-y-4 h-full">
               {/* Status Cards */}
-              <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
                 {/* Overall Status Card */}
                 <Card className="bg-white rounded-2xl shadow-sm border-0">
-                  <CardContent className="p-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-                        <Power className="w-5 h-5 text-blue-600" />
+                  <CardContent className="p-3">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Power className="w-4 h-4 text-blue-600" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900 text-sm">Status</h3>
-                        <div className="flex items-center space-x-2 mt-1">
+                        <h3 className="font-semibold text-gray-900 text-xs">Status</h3>
+                        <div className="flex items-center space-x-1 mt-1">
                           <Badge className={`text-xs ${selectedPerson.status === 'normal' ? 'bg-green-100 text-green-800' : selectedPerson.status === 'warning' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
                             {selectedPerson.status}
                           </Badge>
-                          <div className={`w-2 h-2 rounded-full ${selectedPerson.connected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></div>
+                          <div className={`w-1.5 h-1.5 rounded-full ${selectedPerson.connected ? 'bg-green-400 animate-pulse' : 'bg-red-400'}`}></div>
                         </div>
                       </div>
                     </div>
@@ -483,15 +484,15 @@ const DashboardPage = ({
 
                 {/* Heart Rate Card */}
                 <Card className="bg-white rounded-2xl shadow-sm border-0">
-                  <CardContent className="p-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-red-100 rounded-xl flex items-center justify-center">
-                        <Heart className={`w-5 h-5 text-red-600 ${selectedPerson.connected ? 'animate-heartbeat' : ''}`} />
+                  <CardContent className="p-3">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                        <Heart className={`w-4 h-4 text-red-600 ${selectedPerson.connected ? 'animate-heartbeat' : ''}`} />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900 text-sm">Heart Rate</h3>
+                        <h3 className="font-semibold text-gray-900 text-xs">Heart Rate</h3>
                         <div className="flex items-baseline space-x-1 mt-1">
-                          <span className="text-xl font-bold text-gray-900">{selectedPerson.connected ? selectedPerson.heartRate : '--'}</span>
+                          <span className="text-lg font-bold text-gray-900">{selectedPerson.connected ? selectedPerson.heartRate : '--'}</span>
                           <span className="text-xs text-gray-400">bpm</span>
                         </div>
                       </div>
@@ -501,16 +502,50 @@ const DashboardPage = ({
 
                 {/* Temperature Card */}
                 <Card className="bg-white rounded-2xl shadow-sm border-0">
-                  <CardContent className="p-4">
-                    <div className="flex items-center space-x-3">
-                      <div className="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
-                        <Thermometer className="w-5 h-5 text-blue-600" />
+                  <CardContent className="p-3">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                        <Thermometer className="w-4 h-4 text-blue-600" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900 text-sm">Temperature</h3>
+                        <h3 className="font-semibold text-gray-900 text-xs">Temperature</h3>
                         <div className="flex items-baseline space-x-1 mt-1">
-                          <span className="text-xl font-bold text-gray-900">{selectedPerson.connected ? selectedPerson.temperature : '--'}</span>
+                          <span className="text-lg font-bold text-gray-900">{selectedPerson.connected ? selectedPerson.temperature : '--'}</span>
                           <span className="text-xs text-gray-400">°F</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Blood Group Card */}
+                <Card className="bg-white rounded-2xl shadow-sm border-0">
+                  <CardContent className="p-3">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 bg-red-100 rounded-lg flex items-center justify-center">
+                        <Droplets className="w-4 h-4 text-red-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900 text-xs">Blood Group</h3>
+                        <div className="flex items-baseline space-x-1 mt-1">
+                          <span className="text-lg font-bold text-gray-900">{selectedPerson.bloodGroup}</span>
+                        </div>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Activity Card */}
+                <Card className="bg-white rounded-2xl shadow-sm border-0">
+                  <CardContent className="p-3">
+                    <div className="flex items-center space-x-2">
+                      <div className="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
+                        <Activity className="w-4 h-4 text-green-600" />
+                      </div>
+                      <div>
+                        <h3 className="font-semibold text-gray-900 text-xs">Activity</h3>
+                        <div className="flex items-baseline space-x-1 mt-1">
+                          <span className="text-lg font-bold text-gray-900">{selectedPerson.connected ? 'Active' : 'Inactive'}</span>
                         </div>
                       </div>
                     </div>
