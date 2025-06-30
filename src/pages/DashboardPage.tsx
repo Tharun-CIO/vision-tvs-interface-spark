@@ -576,6 +576,9 @@ const DashboardPage = ({
                         temperatureData={selectedPerson.temperatureHistory}
                         heartRateLatest={`${selectedPerson.heartRate} bpm`}
                         temperatureLatest={`${selectedPerson.temperature}°F`}
+                        status={selectedPerson.status}
+                        bloodGroup={selectedPerson.bloodGroup}
+                        activity={selectedPerson.connected ? 'Active' : 'Inactive'}
                       />
                     </div>
                   ) : (
