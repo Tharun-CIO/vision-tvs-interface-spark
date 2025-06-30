@@ -1,4 +1,3 @@
-
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -10,7 +9,6 @@ import { Heart, Thermometer, User, MapPin, Wifi, LogOut, Settings, Ruler, Weight
 import PersonCard from "../components/PersonCard";
 import VitalChart from "../components/VitalChart";
 import EmployeeEntry from "../components/EmployeeEntry";
-
 interface WorkEntry {
   id: string;
   date: string;
@@ -19,7 +17,6 @@ interface WorkEntry {
   type: string;
   downloadUrl: string;
 }
-
 interface Person {
   id: string;
   name: string;
@@ -45,12 +42,10 @@ interface Person {
   }>;
   previousWork: WorkEntry[];
 }
-
 interface DashboardPageProps {
   onLogout: () => void;
   onShowAdmin: () => void;
 }
-
 const DashboardPage = ({
   onLogout,
   onShowAdmin
@@ -110,32 +105,28 @@ const DashboardPage = ({
       time: "14:00",
       value: 98.6
     }],
-    previousWork: [
-      {
-        id: "w1",
-        date: "2024-06-20",
-        title: "Safety Inspection Report",
-        description: "Building A safety compliance check",
-        type: "PDF",
-        downloadUrl: "/reports/safety-inspection-john.pdf"
-      },
-      {
-        id: "w2",
-        date: "2024-06-18",
-        title: "Equipment Maintenance Log",
-        description: "HVAC system maintenance documentation",
-        type: "XLSX",
-        downloadUrl: "/reports/maintenance-log-john.xlsx"
-      },
-      {
-        id: "w3",
-        date: "2024-06-15",
-        title: "Training Completion Certificate",
-        description: "Fire safety training completion",
-        type: "PDF",
-        downloadUrl: "/reports/training-cert-john.pdf"
-      }
-    ]
+    previousWork: [{
+      id: "w1",
+      date: "2024-06-20",
+      title: "Safety Inspection Report",
+      description: "Building A safety compliance check",
+      type: "PDF",
+      downloadUrl: "/reports/safety-inspection-john.pdf"
+    }, {
+      id: "w2",
+      date: "2024-06-18",
+      title: "Equipment Maintenance Log",
+      description: "HVAC system maintenance documentation",
+      type: "XLSX",
+      downloadUrl: "/reports/maintenance-log-john.xlsx"
+    }, {
+      id: "w3",
+      date: "2024-06-15",
+      title: "Training Completion Certificate",
+      description: "Fire safety training completion",
+      type: "PDF",
+      downloadUrl: "/reports/training-cert-john.pdf"
+    }]
   }, {
     id: "2",
     name: "Sarah Smith",
@@ -189,24 +180,21 @@ const DashboardPage = ({
       time: "14:00",
       value: 99.2
     }],
-    previousWork: [
-      {
-        id: "w4",
-        date: "2024-06-22",
-        title: "Quality Control Report",
-        description: "Product quality assessment for line B",
-        type: "PDF",
-        downloadUrl: "/reports/quality-control-sarah.pdf"
-      },
-      {
-        id: "w5",
-        date: "2024-06-19",
-        title: "Inventory Count Sheet",
-        description: "Weekly inventory verification",
-        type: "XLSX",
-        downloadUrl: "/reports/inventory-sarah.xlsx"
-      }
-    ]
+    previousWork: [{
+      id: "w4",
+      date: "2024-06-22",
+      title: "Quality Control Report",
+      description: "Product quality assessment for line B",
+      type: "PDF",
+      downloadUrl: "/reports/quality-control-sarah.pdf"
+    }, {
+      id: "w5",
+      date: "2024-06-19",
+      title: "Inventory Count Sheet",
+      description: "Weekly inventory verification",
+      type: "XLSX",
+      downloadUrl: "/reports/inventory-sarah.xlsx"
+    }]
   }]);
 
   // Auto-select first person on load
@@ -215,49 +203,46 @@ const DashboardPage = ({
       setSelectedPerson(people[0]);
     }
   }, [people, selectedPerson]);
-
   const handleConnect = (personId: string) => {
-    setPeople(prev => prev.map(person => 
-      person.id === personId 
-        ? { ...person, connected: !person.connected }
-        : person
-    ));
-    
+    setPeople(prev => prev.map(person => person.id === personId ? {
+      ...person,
+      connected: !person.connected
+    } : person));
     if (selectedPerson?.id === personId) {
-      setSelectedPerson(prev => prev ? { ...prev, connected: !prev.connected } : null);
+      setSelectedPerson(prev => prev ? {
+        ...prev,
+        connected: !prev.connected
+      } : null);
     }
   };
-
   const getConnectionStatus = () => {
     const connected = people.filter(p => p.connected).length;
     const total = people.length;
-    return { connected, total };
+    return {
+      connected,
+      total
+    };
   };
-
   const handlePersonSelect = (personId: string) => {
     const person = people.find(p => p.id === personId);
     if (person) {
       setSelectedPerson(person);
     }
   };
-
   const handleDownload = (workEntry: WorkEntry) => {
     // Simulate download - in real app this would trigger actual file download
     console.log(`Downloading ${workEntry.title} for ${selectedPerson?.name}`);
     // window.open(workEntry.downloadUrl, '_blank');
   };
-
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { 
-      year: 'numeric', 
-      month: 'short', 
-      day: 'numeric' 
+    return date.toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'short',
+      day: 'numeric'
     });
   };
-
-  return (
-    <div className="h-screen bg-gray-50 p-4 overflow-hidden">
+  return <div className="h-screen bg-gray-50 p-4 overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-6">
@@ -283,8 +268,7 @@ const DashboardPage = ({
                 <SelectValue placeholder="Select a person" />
               </SelectTrigger>
               <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
-                {people.map((person) => (
-                  <SelectItem key={person.id} value={person.id} className="cursor-pointer hover:bg-gray-50">
+                {people.map(person => <SelectItem key={person.id} value={person.id} className="cursor-pointer hover:bg-gray-50">
                     <div className="flex items-center space-x-3 w-full">
                       <Avatar className="w-6 h-6">
                         <AvatarImage src={person.photo} />
@@ -304,8 +288,7 @@ const DashboardPage = ({
                         </div>
                       </div>
                     </div>
-                  </SelectItem>
-                ))}
+                  </SelectItem>)}
               </SelectContent>
             </Select>
           </div>
@@ -386,24 +369,14 @@ const DashboardPage = ({
                   </div>
 
                   {/* Connect Button */}
-                  <Button 
-                    onClick={() => handleConnect(selectedPerson.id)}
-                    className={`w-full ${selectedPerson.connected 
-                      ? 'bg-red-500 hover:bg-red-600' 
-                      : 'bg-green-500 hover:bg-green-600'
-                    } text-white`}
-                  >
-                    {selectedPerson.connected ? (
-                      <>
+                  <Button onClick={() => handleConnect(selectedPerson.id)} className={`w-full ${selectedPerson.connected ? 'bg-red-500 hover:bg-red-600' : 'bg-green-500 hover:bg-green-600'} text-white`}>
+                    {selectedPerson.connected ? <>
                         <WifiOff className="w-4 h-4 mr-2" />
                         Disconnect
-                      </>
-                    ) : (
-                      <>
+                      </> : <>
                         <Wifi className="w-4 h-4 mr-2" />
                         Connect
-                      </>
-                    )}
+                      </>}
                   </Button>
                 </div> : <div className="text-center">
                   <User className="w-16 h-16 mx-auto mb-4 opacity-50" />
@@ -438,15 +411,10 @@ const DashboardPage = ({
                           </div>
                         </div>
                       </div>
-                      <Button 
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleConnect(person.id);
-                        }}
-                        size="sm"
-                        variant={person.connected ? "destructive" : "default"}
-                        className="text-xs px-2 py-1 h-6"
-                      >
+                      <Button onClick={e => {
+                    e.stopPropagation();
+                    handleConnect(person.id);
+                  }} size="sm" variant={person.connected ? "destructive" : "default"} className="text-xs px-2 py-1 h-6">
                         {person.connected ? <WifiOff className="w-3 h-3" /> : <Wifi className="w-3 h-3" />}
                       </Button>
                     </div>
@@ -458,8 +426,7 @@ const DashboardPage = ({
 
         {/* Main Content */}
         <div className="lg:col-span-3">
-          {selectedPerson ? (
-            <div className="space-y-4 h-full">
+          {selectedPerson ? <div className="space-y-4 h-full">
               {/* Status Cards */}
               <div className="grid grid-cols-1 md:grid-cols-5 gap-3">
                 {/* Overall Status Card */}
@@ -526,7 +493,8 @@ const DashboardPage = ({
                         <Droplets className="w-4 h-4 text-red-600" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900 text-xs">Blood Group</h3>
+                        <h3 className="font-semibold text-gray-900 text-xs">Respiratory rate
+                    </h3>
                         <div className="flex items-baseline space-x-1 mt-1">
                           <span className="text-lg font-bold text-gray-900">{selectedPerson.bloodGroup}</span>
                         </div>
@@ -567,42 +535,26 @@ const DashboardPage = ({
                   </div>
                 </CardHeader>
                 <CardContent className="p-4 pt-0">
-                  {selectedPerson.connected ? (
-                    <div className="h-60">
-                      <VitalChart 
-                        title="Vital Signs" 
-                        subtitle="Real-time monitoring" 
-                        heartRateData={selectedPerson.heartRateHistory}
-                        temperatureData={selectedPerson.temperatureHistory}
-                        heartRateLatest={`${selectedPerson.heartRate} bpm`}
-                        temperatureLatest={`${selectedPerson.temperature}°F`}
-                        status={selectedPerson.status}
-                        bloodGroup={selectedPerson.bloodGroup}
-                        activity={selectedPerson.connected ? 'Active' : 'Inactive'}
-                      />
-                    </div>
-                  ) : (
-                    <div className="flex items-center justify-center h-40 text-gray-500">
+                  {selectedPerson.connected ? <div className="h-60">
+                      <VitalChart title="Vital Signs" subtitle="Real-time monitoring" heartRateData={selectedPerson.heartRateHistory} temperatureData={selectedPerson.temperatureHistory} heartRateLatest={`${selectedPerson.heartRate} bpm`} temperatureLatest={`${selectedPerson.temperature}°F`} status={selectedPerson.status} bloodGroup={selectedPerson.bloodGroup} activity={selectedPerson.connected ? 'Active' : 'Inactive'} />
+                    </div> : <div className="flex items-center justify-center h-40 text-gray-500">
                       <div className="text-center">
                         <WifiOff className="w-12 h-12 mx-auto mb-2 opacity-50" />
                         <p className="text-sm">Device disconnected</p>
                         <p className="text-xs">Connect to view live data</p>
                       </div>
-                    </div>
-                  )}
+                    </div>}
                 </CardContent>
               </Card>
               
               {/* Previous Work Section */}
-              {selectedPerson && (
-                <Card className="bg-white rounded-2xl shadow-sm border-0">
+              {selectedPerson && <Card className="bg-white rounded-2xl shadow-sm border-0">
                   <CardHeader className="pb-2">
                     <CardTitle className="text-gray-900 text-lg">Previous Work - {selectedPerson.name}</CardTitle>
                   </CardHeader>
                   <CardContent className="p-4 pt-0">
                     <div className="space-y-3">
-                      {selectedPerson.previousWork.map((work) => (
-                        <div key={work.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
+                      {selectedPerson.previousWork.map(work => <div key={work.id} className="flex items-center justify-between p-3 bg-gray-50 rounded-lg hover:bg-gray-100 transition-colors">
                           <div className="flex items-center space-x-3">
                             <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
                               <FileText className="w-4 h-4 text-blue-600" />
@@ -619,30 +571,19 @@ const DashboardPage = ({
                               </div>
                             </div>
                           </div>
-                          <Button
-                            onClick={() => handleDownload(work)}
-                            size="sm"
-                            variant="outline"
-                            className="shrink-0"
-                          >
+                          <Button onClick={() => handleDownload(work)} size="sm" variant="outline" className="shrink-0">
                             <Download className="w-3 h-3 mr-1" />
                             Download
                           </Button>
-                        </div>
-                      ))}
-                      {selectedPerson.previousWork.length === 0 && (
-                        <div className="text-center py-8 text-gray-500">
+                        </div>)}
+                      {selectedPerson.previousWork.length === 0 && <div className="text-center py-8 text-gray-500">
                           <FileText className="w-12 h-12 mx-auto mb-2 opacity-50" />
                           <p className="text-sm">No previous work records found</p>
-                        </div>
-                      )}
+                        </div>}
                     </div>
                   </CardContent>
-                </Card>
-              )}
-            </div>
-          ) : (
-            <Card className="bg-white rounded-2xl shadow-sm border-0 h-full flex items-center justify-center">
+                </Card>}
+            </div> : <Card className="bg-white rounded-2xl shadow-sm border-0 h-full flex items-center justify-center">
               <CardContent>
                 <div className="text-center text-gray-500">
                   <User className="w-16 h-16 mx-auto mb-4 opacity-50" />
@@ -650,12 +591,9 @@ const DashboardPage = ({
                   <p className="text-sm">Choose a person to view their health status</p>
                 </div>
               </CardContent>
-            </Card>
-          )}
+            </Card>}
         </div>
       </div>
-    </div>
-  );
+    </div>;
 };
-
 export default DashboardPage;
