@@ -9,7 +9,6 @@ import { Heart, Thermometer, User, MapPin, Wifi, LogOut, Settings, Ruler, Weight
 import PersonCard from "../components/PersonCard";
 import VitalChart from "../components/VitalChart";
 import EmployeeEntry from "../components/EmployeeEntry";
-
 interface WorkEntry {
   id: string;
   date: string;
@@ -383,8 +382,7 @@ const DashboardPage = ({
                     <SelectValue placeholder="Select a device" />
                   </SelectTrigger>
                   <SelectContent className="bg-white border border-gray-200 shadow-lg z-50">
-                    {devices.map(device => (
-                      <SelectItem key={device.id} value={device.id} className="cursor-pointer hover:bg-gray-50">
+                    {devices.map(device => <SelectItem key={device.id} value={device.id} className="cursor-pointer hover:bg-gray-50">
                         <div className="flex items-center space-x-3 w-full">
                           <div className="w-6 h-6 bg-blue-100 rounded flex items-center justify-center">
                             <Monitor className="w-3 h-3 text-blue-600" />
@@ -401,8 +399,7 @@ const DashboardPage = ({
                             </div>
                           </div>
                         </div>
-                      </SelectItem>
-                    ))}
+                      </SelectItem>)}
                   </SelectContent>
                 </Select>
               </div>
@@ -498,7 +495,7 @@ const DashboardPage = ({
                         <Power className="w-4 h-4 text-blue-600" />
                       </div>
                       <div>
-                        <h3 className="font-semibold text-gray-900 text-xs">Status</h3>
+                        <h3 className="font-semibold text-gray-900 text-xs">Blood pressure</h3>
                         <div className="flex items-center space-x-1 mt-1">
                           <Badge className={`text-xs ${selectedDevice.status === 'normal' ? 'bg-green-100 text-green-800' : selectedDevice.status === 'warning' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
                             {selectedDevice.status}
