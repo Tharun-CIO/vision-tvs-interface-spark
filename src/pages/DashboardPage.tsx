@@ -379,9 +379,6 @@ const DashboardPage = ({
                             <div className="flex items-center justify-between">
                               <span className="font-medium text-gray-900">{device.deviceName}</span>
                               <div className="flex items-center space-x-2">
-                                <Badge className={`text-xs ${device.status === 'normal' ? 'bg-green-100 text-green-800' : device.status === 'warning' ? 'bg-yellow-100 text-yellow-800' : 'bg-red-100 text-red-800'}`}>
-                                  {device.status}
-                                </Badge>
                                 <div className={`w-1.5 h-1.5 rounded-full ${device.connected ? 'bg-green-400' : 'bg-gray-400'}`}></div>
                               </div>
                             </div>
