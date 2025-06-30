@@ -351,11 +351,18 @@ const DashboardPage = ({
                 Employee Entry
               </Button>
             </DialogTrigger>
-            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-gray-800">
-              <DialogHeader>
-                <DialogTitle className="text-white">Employee Entry</DialogTitle>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto bg-white border-0 rounded-2xl shadow-xl">
+              <DialogHeader className="pb-4 border-b border-gray-100">
+                <DialogTitle className="text-xl font-bold text-gray-900 flex items-center space-x-2">
+                  <div className="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
+                    <UserPlus className="w-4 h-4 text-blue-600" />
+                  </div>
+                  <span>Employee Entry</span>
+                </DialogTitle>
               </DialogHeader>
-              <EmployeeEntry onBack={() => setIsEmployeeEntryOpen(false)} />
+              <div className="pt-4">
+                <EmployeeEntry onBack={() => setIsEmployeeEntryOpen(false)} />
+              </div>
             </DialogContent>
           </Dialog>
           
