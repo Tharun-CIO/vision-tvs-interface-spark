@@ -309,6 +309,14 @@ const DashboardPage = ({
     });
   };
 
+  const getWorkEntryDisplayName = () => {
+    if (!selectedDevice) return "";
+    if (selectedDevice.assignedPerson) {
+      return selectedDevice.assignedPerson;
+    }
+    return `${selectedDevice.deviceName} - ${getCurrentDate()}`;
+  };
+
   return <div className="h-screen bg-gray-50 p-4 overflow-hidden">
       {/* Header */}
       <div className="flex items-center justify-between mb-3">
@@ -654,7 +662,7 @@ const DashboardPage = ({
                                   {work.type}
                                 </Badge>
                                 <span className="text-xs text-gray-400">•</span>
-                                <span className="text-xs text-blue-600">Device: {selectedDevice.deviceName}</span>
+                                <span className="text-xs text-blue-600">{getWorkEntryDisplayName()}</span>
                               </div>
                             </div>
                           </div>
