@@ -121,3 +121,23 @@
     transform: scale(1);
   }
 }
+
+/* Responsive improvements */
+@media (max-width: 640px) {
+  .grid {
+    gap: 1rem;
+  }
+}
+
+/* Ensure proper scrolling on mobile */
+html, body {
+  overflow-x: hidden;
+}
+
+/* Improve touch targets on mobile */
+@media (max-width: 768px) {
+  button, [role="button"] {
+    min-height: 44px;
+    min-width: 44px;
+  }
+}

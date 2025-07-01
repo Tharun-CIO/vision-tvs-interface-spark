@@ -67,57 +67,57 @@ const EmployeeEntry = ({ onBack }: EmployeeEntryProps) => {
   };
 
   return (
-    <div className="w-full max-w-2xl mx-auto">
-      <div className="mb-6 flex items-center justify-between">
+    <div className="bg-white w-full max-w-2xl mx-auto p-2">
+      <div className="text-center justify-center mb-6 flex items-center">
         <div>
-          <h2 className="text-2xl font-bold text-white">Add New Employee</h2>
-          <p className="text-gray-300">Enter the employee details below to create a new monitoring profile.</p>
+          <h2 className="text-2xl font-bold">Add New Employee</h2>
+          <p>Enter the employee details below to create a new monitoring profile.</p>
         </div>
       </div>
 
       <form onSubmit={handleSubmit} className="space-y-6">
         {/* Name Fields */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-2">
           <div>
-            <Label htmlFor="firstName" className="text-white font-medium">First Name</Label>
+            <Label htmlFor="firstName" className="font-medium">First Name</Label>
             <Input
               id="firstName"
               value={formData.firstName}
               onChange={(e) => setFormData({...formData, firstName: e.target.value})}
-              className="bg-white border-2 border-blue-500 text-black placeholder-gray-500"
-              placeholder="First name"
+              className="bg-white border border-gray-300 text-black placeholder-gray-500"
+              placeholder="First Name"
               required
             />
           </div>
           <div>
-            <Label htmlFor="lastName" className="text-white font-medium">Last Name</Label>
+            <Label htmlFor="lastName" className="font-medium">Last Name</Label>
             <Input
               id="lastName"
               value={formData.lastName}
               onChange={(e) => setFormData({...formData, lastName: e.target.value})}
               className="bg-white border border-gray-300 text-black placeholder-gray-500"
-              placeholder="Last name"
+              placeholder="Last Name"
               required
             />
           </div>
         </div>
 
         {/* Age and Gender */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-2">
           <div>
-            <Label htmlFor="age" className="text-white font-medium">Age</Label>
+            <Label htmlFor="age" className="font-medium">Age</Label>
             <Input
               id="age"
               type="number"
               value={formData.age}
               onChange={(e) => setFormData({...formData, age: e.target.value})}
               className="bg-white border border-gray-300 text-black placeholder-gray-500"
-              placeholder="30"
+              placeholder="27"
               required
             />
           </div>
           <div>
-            <Label htmlFor="gender" className="text-white font-medium">Gender</Label>
+            <Label htmlFor="gender" className="font-medium">Gender</Label>
             <select
               id="gender"
               value={formData.gender}
@@ -134,7 +134,7 @@ const EmployeeEntry = ({ onBack }: EmployeeEntryProps) => {
 
         {/* Location */}
         <div>
-          <Label htmlFor="location" className="text-white font-medium">Location</Label>
+          <Label htmlFor="location" className="font-medium">Location</Label>
           <Input
             id="location"
             value={formData.location}
@@ -146,9 +146,9 @@ const EmployeeEntry = ({ onBack }: EmployeeEntryProps) => {
         </div>
 
         {/* Blood Group and Contact Number */}
-        <div className="grid grid-cols-2 gap-4">
+        <div className="grid grid-cols-2 gap-">
           <div>
-            <Label htmlFor="bloodGroup" className="text-white font-medium">Blood Group</Label>
+            <Label htmlFor="bloodGroup" className="font-medium">Blood Group</Label>
             <Input
               id="bloodGroup"
               value={formData.bloodGroup}
@@ -159,7 +159,7 @@ const EmployeeEntry = ({ onBack }: EmployeeEntryProps) => {
             />
           </div>
           <div>
-            <Label htmlFor="contactNumber" className="text-white font-medium">Contact Number</Label>
+            <Label htmlFor="contactNumber" className="font-medium">Contact Number</Label>
             <Input
               id="contactNumber"
               type="tel"
@@ -180,16 +180,16 @@ const EmployeeEntry = ({ onBack }: EmployeeEntryProps) => {
             onCheckedChange={(checked) => setFormData({...formData, autoGenerateMAC: checked as boolean})}
             className="border-white data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600"
           />
-          <Label htmlFor="autoGenerateMAC" className="text-white font-medium">
+          <Label htmlFor="autoGenerateMAC" className="font-medium">
             Auto-generate MAC Address
           </Label>
         </div>
 
         {/* Photo Upload */}
         <div>
-          <Label className="text-white font-medium">Photo</Label>
+          <Label className="font-medium">Photo</Label>
           <div className="mt-2">
-            <div className="flex items-center space-x-4">
+            <div className="flex items-center">
               <input
                 type="file"
                 accept="image/*"
@@ -205,7 +205,7 @@ const EmployeeEntry = ({ onBack }: EmployeeEntryProps) => {
               >
                 Choose File
               </Button>
-              <span className="text-gray-300 text-sm">
+              <span className=" text-sm ml-2">
                 {imageFile ? imageFile.name : 'No file chosen'}
               </span>
             </div>

@@ -10,9 +10,7 @@ interface VitalData {
   heartRate: number;
   temperature: number;
   respiratoryRate: number;
-  status: number;
-  bloodGroup: number;
-  activity: number;
+  bloodPressure: number;
 }
 
 interface VitalChartProps {
@@ -33,9 +31,7 @@ interface VitalChartProps {
   heartRateLatest: string;
   temperatureLatest: string;
   respiratoryRateLatest: string;
-  status: string;
-  bloodGroup: string;
-  activity: string;
+  bloodPressureLatest: string;
 }
 
 const VitalChart = ({
@@ -47,26 +43,14 @@ const VitalChart = ({
   heartRateLatest,
   temperatureLatest,
   respiratoryRateLatest,
-  status,
-  bloodGroup,
-  activity
+  bloodPressureLatest
 }: VitalChartProps) => {
-  const [selectedVital, setSelectedVital] = useState<'heartRate' | 'temperature' | 'respiratoryRate' | 'status' | 'bloodGroup' | 'activity'>('heartRate');
+  const [selectedVital, setSelectedVital] = useState<'heartRate' | 'temperature' | 'respiratoryRate' | 'bloodPressure'>('heartRate');
 
-  // Generate mock data for status, bloodGroup, and activity over time
-  const statusData = heartRateData.map((item, index) => ({
+  // Generate mock data for blood pressure over time
+  const bloodPressureData = heartRateData.map((item, index) => ({
     time: item.time,
-    value: status === 'normal' ? 1 : status === 'warning' ? 2 : 3
-  }));
-
-  const bloodGroupData = heartRateData.map((item, index) => ({
-    time: item.time,
-    value: bloodGroup === 'O+' ? 1 : bloodGroup === 'A-' ? 2 : bloodGroup === 'B+' ? 3 : 4
-  }));
-
-  const activityData = heartRateData.map((item, index) => ({
-    time: item.time,
-    value: activity === 'Active' ? Math.floor(Math.random() * 30) + 70 : Math.floor(Math.random() * 20) + 30
+    value: Math.floor(Math.random() * 40) + 100 // Random BP values between 100-140
   }));
 
   // Combine the data
@@ -75,9 +59,7 @@ const VitalChart = ({
     heartRate: hrItem.value,
     temperature: temperatureData[index]?.value || 0,
     respiratoryRate: respiratoryRateData[index]?.value || 0,
-    status: statusData[index]?.value || 1,
-    bloodGroup: bloodGroupData[index]?.value || 1,
-    activity: activityData[index]?.value || 50
+    bloodPressure: bloodPressureData[index]?.value || 120
   }));
 
   const vitalOptions = [
@@ -109,30 +91,12 @@ const VitalChart = ({
       type: 'line'
     },
     { 
-      value: 'status', 
-      label: 'Status', 
-      color: '#10b981', 
-      unit: '', 
-      normalRange: 'Normal', 
-      latest: status,
-      type: 'bar'
-    },
-    { 
-      value: 'bloodGroup', 
-      label: 'Blood Group', 
+      value: 'bloodPressure', 
+      label: 'Blood Pressure', 
       color: '#f59e0b', 
-      unit: '', 
-      normalRange: 'Type', 
-      latest: bloodGroup,
-      type: 'bar'
-    },
-    { 
-      value: 'activity', 
-      label: 'Activity Level', 
-      color: '#8b5cf6', 
-      unit: '%', 
-      normalRange: '60-100%', 
-      latest: activity,
+      unit: 'mmHg', 
+      normalRange: '120/80 mmHg', 
+      latest: bloodPressureLatest,
       type: 'line'
     }
   ];
@@ -151,7 +115,7 @@ const VitalChart = ({
       <div className="flex items-center justify-between mb-2">
         <div className="flex items-center space-x-3">
           <p className="text-gray-600 text-xs">{subtitle}</p>
-          <Select value={selectedVital} onValueChange={(value: 'heartRate' | 'temperature' | 'respiratoryRate' | 'status' | 'bloodGroup' | 'activity') => setSelectedVital(value)}>
+          <Select value={selectedVital} onValueChange={(value: 'heartRate' | 'temperature' | 'respiratoryRate' | 'bloodPressure') => setSelectedVital(value)}>
             <SelectTrigger className="w-48 h-7 text-xs bg-white border-gray-200">
               <SelectValue />
             </SelectTrigger>

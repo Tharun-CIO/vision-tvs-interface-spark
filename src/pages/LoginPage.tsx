@@ -26,7 +26,7 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
       if (email && password) {
         toast({
           title: "Login Successful",
-          description: "Welcome to TV Monitoring System",
+          description: "Welcome to Cold Chamber Monitoring System",
         });
         onLogin();
       } else {
@@ -47,7 +47,7 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
           <div className="mx-auto w-16 h-16 bg-blue-500 rounded-full flex items-center justify-center">
             <Monitor className="w-8 h-8 text-white" />
           </div>
-          <CardTitle className="text-2xl font-bold text-black">TV Monitoring System</CardTitle>
+          <CardTitle className="text-2xl font-bold text-black">Login</CardTitle>
           <CardDescription className="text-gray-600">
             Secure access to your monitoring dashboard
           </CardDescription>
@@ -60,7 +60,7 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
               <Input
                 id="email"
                 type="email"
-                placeholder="admin@tvmonitor.com"
+                placeholder="admin@ccmd.com"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="bg-white border-2 border-black text-black placeholder:text-gray-500 focus:border-blue-500"
@@ -110,12 +110,6 @@ const LoginPage = ({ onLogin }: LoginPageProps) => {
               )}
             </Button>
           </form>
-
-          <div className="text-center">
-            <p className="text-sm text-gray-600">
-              Demo credentials: any email and password
-            </p>
-          </div>
         </CardContent>
       </Card>
     </div>
